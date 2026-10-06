@@ -6,6 +6,16 @@ Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD sett
 
 The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0; OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
 
+## Download Android APK
+
+[Version 1.2 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, pending real-device OTA validation.
+
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-release.apk) — signed build for normal installation, 55,768 bytes.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-debug-test-only.apk) — 61,253 bytes; `testOnly=true`, install with `adb install -t HUD-Control-1.2-debug-test-only.apk`.
+- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/SHA256SUMS.txt).
+
+Both are maintainer-supplied version 1.2 (versionCode 3). APK v2 signatures and content digests were verified. Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
+
 ## Features
 
 | Feature | Behaviour |
@@ -23,7 +33,7 @@ The app does not read CAN itself and does not stream a phone map to the HUD. Nav
 
 ## Build
 
-Source is included; no prebuilt APK or signing key is committed.
+Source is included; APKs are available in the release linked above. Private signing keys are not committed.
 
 | Tool / setting | Version |
 |---|---|
@@ -101,7 +111,7 @@ OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `�
 | Services changed | Reconnect; if necessary toggle Android Bluetooth and restart HUD |
 | Cannot install over an existing app | Check application ID and signing key |
 
-The user reported the earlier settings app working. The v1.2 OTA additions need an Android build/lint run and a transfer test on real hardware. This source snapshot was not compiled into an APK here. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
+The user reported the earlier settings app working. The maintainer supplied signed v1.2 APKs; signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results and real-device OTA testing are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
 
 ## Credits and license
 
