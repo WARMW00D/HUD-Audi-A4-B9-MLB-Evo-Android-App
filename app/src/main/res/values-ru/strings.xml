@@ -32,7 +32,7 @@
   <string name="display_settings">Настройки дисплея</string>
   <string name="connect_first">Сначала подключитесь</string>
   <string name="nvs_hint">Изменения сохраняет HUD в NVS. Подтверждение появляется после чтения значения обратно из устройства.</string>
-  <string name="pair_hint">Первое сопряжение: PIN по умолчанию 482731 вводится в системном окне Android. Уже сопряжённый через nRF Connect телефон можно выбрать выше. Перед подключением отключитесь от HUD в nRF Connect.</string>
+  <string name="pair_hint">Первое сопряжение: PIN из настроек прошивки HUD вводится в системном окне Android. Уже сопряжённый через nRF Connect телефон можно выбрать выше. Перед подключением отключитесь от HUD в nRF Connect.</string>
   <string name="brightness_hint">Ночная яркость 2–40 задаётся в прошивке.</string>
   <string name="stop_search">Остановить поиск</string>
   <string name="not_selected">HUD ещё не выбран</string>
@@ -55,7 +55,7 @@
   <string name="discovery_failed">Не удалось прочитать список сервисов</string>
   <string name="bt_off">Bluetooth выключен</string>
   <string name="bond_cancelled">Сопряжение отменено или PIN неверен. Попробуйте снова.</string>
-  <string name="pairing">Сопряжение: откройте системное окно Android и введите PIN (по умолчанию 482731)</string>
+  <string name="pairing">Сопряжение: откройте системное окно Android и введите PIN</string>
   <string name="bond_start_failed">Не удалось начать сопряжение</string>
   <string name="service_missing">Сервис настроек HUD не найден. Выберите HUD с прошивкой v28.1 или v28.2.</string>
   <string name="verifying">Проверка сохранения…</string>
@@ -117,4 +117,13 @@
   <string name="ota_confirm">%1$s\n%2$d байт\n\nУбедитесь, что файл собран для этого HUD с OTA-разметкой. Не выключайте питание. После проверки файла HUD перезагрузится.</string>
   <string name="ota_progress">%1$d%% · получено %2$d / %3$d байт</string>
   <string name="service_changed_retry">Список сервисов HUD изменился. Подключитесь снова, чтобы обновить его.</string>
+  <string name="tank">Объём бака</string>
+  <string name="tank_detail">Объём в литрах (1–200) для расчёта долива. Не зависит от единиц отображения.</string>
+  <string name="tank_edit">Изменить объём</string>
+  <string name="tank_value">%1$d л</string>
+  <string name="tank_invalid">Введите целое число от 1 до 200 литров</string>
+  <string name="accel">Бар ускорения</string>
+  <string name="accel_detail">Показывать бар на HUD при наличии данных об ускорении.</string>
+  <string name="apply">Применить</string>
+  <string name="new_settings_firmware">Нужна прошивка HUD v29.1 или новее</string>
 </resources>

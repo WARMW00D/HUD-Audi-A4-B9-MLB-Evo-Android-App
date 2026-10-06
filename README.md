@@ -2,9 +2,19 @@
 
 [Русская версия](README_ru.md) · [SuperMini firmware and wiring](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE)
 
-Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.2** (`versionCode 3`), Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
+Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.3** (`versionCode 4`), Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
 
 The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0; OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
+
+## Tank capacity and acceleration bar
+
+Source versions: **HUD firmware v29.1 / Android app 1.3 (versionCode 4)**.
+
+- **Tank capacity:** enter a whole number from **1 to 200 litres**; default **54 L**. The capacity is always entered in litres, even with US gallons selected, and updates the HUD fuel-to-add calculation.
+- **Acceleration bar:** turn it on or off from the app. When enabled, the existing bar uses valid acceleration/speed data; it remains empty while stationary or without valid data.
+- Both settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
+
+These controls need **app 1.3 + firmware v29.1**. App 1.3 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; rebuild app 1.3. New binaries were not built here. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
 
 ## App screenshots
 
@@ -79,7 +89,7 @@ To update an installed app, retain **applicationId and the same signing key**. D
 
 1. Start the HUD. An unowned HUD advertises as **HUD-SuperMini**.
 2. Open the app, allow the Bluetooth permissions requested by Android and scan. Older Android versions may require location permission/service for BLE scanning.
-3. Select the HUD and complete the Android pairing dialog. Default PIN: **482731**, set by firmware `HUD_SETTINGS_PIN`.
+3. Select the HUD and complete the Android pairing dialog. Default PIN: `HUD_SETTINGS_PIN` (`supermini_hud/user_config.h`), set by firmware `HUD_SETTINGS_PIN`.
 4. The first authenticated phone becomes the owner. Read the current settings, then change the required values.
 5. Reconnect using the saved/bonded device. After ownership is stored, the HUD uses anonymous/non-discoverable advertising and may not appear by name in a new scan.
 
@@ -112,6 +122,8 @@ Settings service: `74d0a100-3d92-4f50-9b1a-478142000001`. Each setting is one by
 | `…0004` | HUD language | RU | EN |
 | `…0005` | Speed/distance | km | miles |
 | `…0006` | Fuel volume | litres | US gallons |
+| `…0007` | Tank capacity | 1..200 litres (one unsigned byte) | — |
+| `…0008` | Acceleration bar | off | on |
 
 OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `…0003`. It negotiates MTU, sends one acknowledged operation at a time and reads the confirmed offset after each chunk. Encrypted, authenticated bonding and owner identity are enforced by the HUD.
 

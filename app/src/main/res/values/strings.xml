@@ -32,7 +32,7 @@
   <string name="display_settings">Display settings</string>
   <string name="connect_first">Connect first</string>
   <string name="nvs_hint">HUD saves changes in NVS. Confirmation appears after the value is read back from the device.</string>
-  <string name="pair_hint">First pairing: enter the default PIN 482731 in the Android system dialog. If this phone is already paired via nRF Connect, select HUD above. Disconnect from HUD in nRF Connect before connecting here.</string>
+  <string name="pair_hint">First pairing: enter the PIN configured in HUD firmware in the Android system dialog. If this phone is already paired via nRF Connect, select HUD above. Disconnect from HUD in nRF Connect before connecting here.</string>
   <string name="brightness_hint">Night brightness 2–40 is set in the firmware.</string>
   <string name="stop_search">Stop search</string>
   <string name="not_selected">No HUD selected yet</string>
@@ -55,7 +55,7 @@
   <string name="discovery_failed">Could not read the service list</string>
   <string name="bt_off">Bluetooth is off</string>
   <string name="bond_cancelled">Pairing cancelled or incorrect PIN. Please try again.</string>
-  <string name="pairing">Pairing: open the Android system dialog and enter the PIN (default 482731)</string>
+  <string name="pairing">Pairing: open the Android system dialog and enter the PIN</string>
   <string name="bond_start_failed">Could not start pairing</string>
   <string name="service_missing">HUD settings service not found. Select a HUD running firmware v28.1 or v28.2.</string>
   <string name="verifying">Verifying the saved value…</string>
@@ -117,4 +117,13 @@
   <string name="ota_confirm">%1$s\n%2$d bytes\n\nMake sure this file was built for this HUD with the OTA layout. Keep power on. HUD will restart after verification.</string>
   <string name="ota_progress">%1$d%% · %2$d / %3$d bytes received</string>
   <string name="service_changed_retry">The HUD service list changed. Reconnect to refresh it.</string>
+  <string name="tank">Tank capacity</string>
+  <string name="tank_detail">Capacity in litres (1–200), used to calculate fuel to add. Independent of display units.</string>
+  <string name="tank_edit">Change capacity</string>
+  <string name="tank_value">%1$d L</string>
+  <string name="tank_invalid">Enter a whole number from 1 to 200 litres</string>
+  <string name="accel">Acceleration bar</string>
+  <string name="accel_detail">Show the acceleration bar on the HUD when acceleration data is available.</string>
+  <string name="apply">Apply</string>
+  <string name="new_settings_firmware">Requires HUD firmware v29.1 or later</string>
 </resources>

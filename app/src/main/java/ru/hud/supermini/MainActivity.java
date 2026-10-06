@@ -52,6 +52,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.EditText;
+import android.text.InputType;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -71,27 +73,29 @@ public final class MainActivity extends Activity {
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000003"),
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000004"),
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000005"),
-        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000006")
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000006"),
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000007"),
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000008")
     };
-    private static final int[] TITLES = {R.string.psd, R.string.vze, R.string.hud_language, R.string.units, R.string.fuel};
+    private static final int[] TITLES = {R.string.psd, R.string.vze, R.string.hud_language, R.string.units, R.string.fuel, R.string.tank, R.string.accel};
     private static final int[][] CHOICES = {
         {R.string.off, R.string.on}, {R.string.off, R.string.on},
-        {R.string.russian, R.string.english}, {R.string.metric, R.string.imperial}, {R.string.litres, R.string.gallons}
+        {R.string.russian, R.string.english}, {R.string.metric, R.string.imperial}, {R.string.litres, R.string.gallons}, null, {R.string.off, R.string.on}
     };
     private static final int[] DETAILS = {
         R.string.psd_detail,
         R.string.vze_detail,
         R.string.language_detail,
         R.string.units_detail,
-        R.string.fuel_detail
+        R.string.fuel_detail, R.string.tank_detail, R.string.accel_detail
     };
     private static final int BG = Color.rgb(16, 24, 32), CARD = Color.rgb(26, 38, 49);
     private static final int ACCENT = Color.rgb(84, 221, 232), MUTED = Color.rgb(171, 186, 197);
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final int[] values = {-1, -1, -1, -1, -1};
-    private final BluetoothGattCharacteristic[] characteristics = new BluetoothGattCharacteristic[5];
-    private final Button[][] choices = new Button[5][2];
-    private final TextView[] current = new TextView[5];
+    private final int[] values = {-1, -1, -1, -1, -1, -1, -1};
+    private final BluetoothGattCharacteristic[] characteristics = new BluetoothGattCharacteristic[UUIDS.length];
+    private final Button[][] choices = new Button[UUIDS.length][2];
+    private final TextView[] current = new TextView[UUIDS.length];
     private final Map<String, BluetoothDevice> found = new LinkedHashMap<>();
     private final ArrayDeque<Op> queue = new ArrayDeque<>();
     private SharedPreferences prefs;
@@ -99,7 +103,8 @@ public final class MainActivity extends Activity {
     private String appLanguage;
     private int statusKey = R.string.initial;
     private Object[] statusArgs = new Object[0];
-    private Button languageRu, languageEn;
+    private Button languageRu, languageEn, tankEdit;
+    private static final int TANK = 5;
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothGatt gatt;
@@ -130,7 +135,7 @@ public final class MainActivity extends Activity {
     private static final class Op {
         final int index, value;
         final boolean write;
-        // For reads: -1 = ordinary read; 0/1 = expected write confirmation.
+        // For reads: -1 = ordinary read; 0..200 = expected write confirmation.
         Op(int index, boolean write, int value) {
             this.index = index; this.write = write; this.value = value;
         }
@@ -215,7 +220,7 @@ public final class MainActivity extends Activity {
         disconnect = button(s(R.string.disconnect)); disconnect.setOnClickListener(v -> { closeGatt(); note(R.string.disconnected); }); add(root, disconnect);
         refresh = button(s(R.string.refresh)); refresh.setOnClickListener(v -> readAll()); add(root, refresh);
         add(root, text(s(R.string.display_settings), 22, Color.WHITE));
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<UUIDS.length; i++) {
             final int index=i;
             LinearLayout card = new LinearLayout(this); card.setOrientation(LinearLayout.VERTICAL);
             card.setPadding(dp(16), dp(12), dp(16), dp(16)); card.setBackground(bg(CARD));
@@ -223,6 +228,11 @@ public final class MainActivity extends Activity {
             card.addView(text(s(DETAILS[i]), 12, MUTED));
             current[i]=text(s(R.string.connect_first), 13, ACCENT); card.addView(current[i]);
             LinearLayout row = new LinearLayout(this);
+            if (i == TANK) {
+                tankEdit = button(s(R.string.tank_edit));
+                tankEdit.setOnClickListener(v -> editTank());
+                card.addView(tankEdit); add(root, card); continue;
+            }
             for (int j=0; j<2; j++) {
                 final int value=j;
                 Button b=button(s(CHOICES[i][j])); choices[i][j]=b;
@@ -255,6 +265,33 @@ public final class MainActivity extends Activity {
         cancelOta=button(s(R.string.ota_cancel));
         cancelOta.setOnClickListener(v -> { if (ota!=null) ota.cancel(); }); add(root, cancelOta);
         setContentView(scroll);
+    }
+
+    private void editTank() {
+        if (!ready || characteristics[TANK] == null || active != null || !queue.isEmpty() || otaInProgress()) return;
+        EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setSingleLine(true);
+        input.setText(values[TANK] > 0 ? Integer.toString(values[TANK]) : "54");
+        input.selectAll();
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(s(R.string.tank))
+            .setMessage(s(R.string.tank_detail)).setView(input)
+            .setNegativeButton(s(R.string.cancel), null)
+            .setPositiveButton(s(R.string.apply), null).create();
+        dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(b -> {
+            int litres;
+            try { litres = Integer.parseInt(input.getText().toString().trim()); }
+            catch (NumberFormatException e) { input.setError(s(R.string.tank_invalid)); return; }
+            if (!validSetting(TANK, litres)) { input.setError(s(R.string.tank_invalid)); return; }
+            change(TANK, litres); dialog.dismiss();
+        }));
+        dialog.show();
+    }
+    private static boolean validSetting(int index, int value) {
+        return index == TANK ? value >= 1 && value <= 200 : value == 0 || value == 1;
+    }
+    private String settingText(int index, int value) {
+        return index == TANK ? s(R.string.tank_value, value) : s(CHOICES[index][value]);
     }
 
     private static final class TextArg {
@@ -313,10 +350,13 @@ public final class MainActivity extends Activity {
         otaProgressLabel.setText(otaTotal==0 ? "" : s(R.string.ota_progress,(int)((long)otaReceived*100/otaTotal),otaReceived,otaTotal));
         String address = displayAddress.isEmpty() ? prefs.getString("address", "") : displayAddress;
         deviceLabel.setText(address.isEmpty() ? s(R.string.not_selected) : "HUD · " + address);
-        for (int i=0; i<5; i++) {
-            current[i].setText(values[i] < 0 ? s(R.string.not_read) : s(R.string.current_value, s(CHOICES[i][values[i]])));
+        for (int i=0; i<UUIDS.length; i++) {
+            boolean supported = characteristics[i] != null;
+            current[i].setText(ready && !supported ? s(R.string.new_settings_firmware) :
+                values[i] < 0 ? s(R.string.not_read) : s(R.string.current_value, settingText(i, values[i])));
+            if (i == TANK) { tankEdit.setEnabled(idle && supported); continue; }
             for (int j=0; j<2; j++) {
-                Button b=choices[i][j]; b.setEnabled(idle); b.setAlpha(idle ? 1f : 0.55f);
+                Button b=choices[i][j]; b.setEnabled(idle && supported); b.setAlpha(idle && supported ? 1f : 0.55f);
                 b.setBackground(bg(values[i] == j ? ACCENT : BG));
                 b.setTextColor(values[i] == j ? BG : Color.WHITE);
             }
@@ -509,11 +549,13 @@ public final class MainActivity extends Activity {
                 if (code != BluetoothGatt.GATT_SUCCESS) { fail(R.string.discovery_error, code); return; }
                 BluetoothGattService service=g.getService(SERVICE);
                 if (service == null) { fail(R.string.service_missing); return; }
-                for (int i=0; i<5; i++) {
+                for (int i=0; i<UUIDS.length; i++) {
                     characteristics[i]=service.getCharacteristic(UUIDS[i]);
                     if (characteristics[i] == null || (characteristics[i].getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) == 0 ||
                         (characteristics[i].getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE) == 0) {
-                        fail(R.string.incomplete_service, new TextArg(TITLES[i])); return;
+                        if (i < 5) { fail(R.string.incomplete_service, new TextArg(TITLES[i])); return; }
+                        characteristics[i] = null; // Optional on older firmware.
+
                     }
                 }
                 BluetoothGattService otaService=g.getService(OtaTransfer.SERVICE);
@@ -555,16 +597,16 @@ public final class MainActivity extends Activity {
     private void readResult(BluetoothGatt g, BluetoothGattCharacteristic c, byte[] bytes, int code) {
         if (ota!=null && ota.read(g,c,bytes,code)) return;
         if (!matches(g, c, false)) return;
-        if (code != BluetoothGatt.GATT_SUCCESS || bytes == null || bytes.length != 1 || (bytes[0] != 0 && bytes[0] != 1)) {
+        if (code != BluetoothGatt.GATT_SUCCESS || bytes == null || bytes.length != 1 || !validSetting(active.index, bytes[0] & 255)) {
             fail(R.string.read_error, code); return;
         }
         Op read=active; active=null; main.removeCallbacks(operationTimeout);
-        values[read.index]=bytes[0];
+        values[read.index]=bytes[0] & 255;
         if (read.value >= 0) {
-            if (values[read.index] == read.value) note(R.string.saved, new TextArg(TITLES[read.index]), new TextArg(CHOICES[read.index][read.value]));
+            if (values[read.index] == read.value) note(R.string.saved, new TextArg(TITLES[read.index]), settingText(read.index, read.value));
             else note(R.string.write_not_confirmed);
         }
-        boolean all=true; for (int v : values) all &= v >= 0;
+        boolean all=true; for (int i=0; i<UUIDS.length; i++) all &= characteristics[i] == null || values[i] >= 0;
         if (all && !ready) {
             ready=true; main.removeCallbacks(connectionTimeout);
             prefs.edit().putString("address", displayAddress).apply();
@@ -575,11 +617,11 @@ public final class MainActivity extends Activity {
     private void readAll() {
         if (gatt == null || !connected || active != null || !queue.isEmpty() || characteristics[0] == null || otaInProgress()) return;
         ready=false; Arrays.fill(values, -1); note(R.string.reading);
-        for (int i=0; i<5; i++) queue.add(new Op(i, false, -1));
+        for (int i=0; i<UUIDS.length; i++) if (characteristics[i] != null) queue.add(new Op(i, false, -1));
         pump();
     }
     private void change(int index, int value) {
-        if (!ready || active != null || !queue.isEmpty() || values[index] == value || otaInProgress()) return;
+        if (!ready || characteristics[index] == null || !validSetting(index, value) || active != null || !queue.isEmpty() || values[index] == value || otaInProgress()) return;
         queue.add(new Op(index, true, value)); note(R.string.saving, new TextArg(TITLES[index])); pump();
     }
     private void pump() {
