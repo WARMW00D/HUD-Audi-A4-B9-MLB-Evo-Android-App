@@ -6,6 +6,23 @@ Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD sett
 
 The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0; OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
 
+## App screenshots
+
+Screenshots supplied by WARMW00D, showing the English interface.
+
+<table>
+  <tr>
+    <th>Connection</th>
+    <th>Display settings</th>
+    <th>Firmware update</th>
+  </tr>
+  <tr>
+    <td><img src="docs/images/app-connection-en.jpg" alt="HUD Control: language selection and BLE connection" width="280"></td>
+    <td><img src="docs/images/app-settings-en.jpg" alt="HUD Control: PSD, VZE, HUD language and units" width="280"></td>
+    <td><img src="docs/images/app-ota-en.jpg" alt="HUD Control: BLE OTA firmware update" width="280"></td>
+  </tr>
+</table>
+
 ## Download Android APK
 
 [Version 1.2 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, pending real-device OTA validation.

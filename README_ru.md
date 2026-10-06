@@ -6,6 +6,23 @@
 
 Проект вырос из [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) и адаптации SuperMini. **Приложение использует телефонные GATT-сервисы SuperMini:** настройки v28.1/v28.2 и v29.0; OTA требует v29.0 или совместимую следующую версию. В существующую прошивку Waveshare эти сервисы сначала нужно перенести.
 
+## Скриншоты приложения
+
+Скриншоты от WARMW00D: показана английская версия интерфейса.
+
+<table>
+  <tr>
+    <th>Подключение</th>
+    <th>Настройки дисплея</th>
+    <th>Обновление прошивки</th>
+  </tr>
+  <tr>
+    <td><img src="docs/images/app-connection-en.jpg" alt="HUD Control: выбор языка и подключение BLE" width="280"></td>
+    <td><img src="docs/images/app-settings-en.jpg" alt="HUD Control: PSD, VZE, язык HUD и единицы" width="280"></td>
+    <td><img src="docs/images/app-ota-en.jpg" alt="HUD Control: обновление прошивки по BLE OTA" width="280"></td>
+  </tr>
+</table>
+
 ## Скачать APK Android
 
 [Версия 1.2](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, до проверки OTA на реальных устройствах.
