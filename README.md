@@ -15,34 +15,34 @@ Source versions: **HUD firmware v29.1 / Android app 1.3 (versionCode 4)**.
 - **Overspeed tolerance:** set **0–100 km/h**, default **20 km/h**, always entered in km/h even with mph selected. The red speed outline fades in from 75% of tolerance and is fully red at 100%; zero makes any positive overspeed fully red.
 - All three settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
 
-These controls need **app 1.3 + firmware v29.1**. App 1.3 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; rebuild app 1.3. New binaries were not built here. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
+These controls need **app 1.3 + firmware v29.1**. App 1.3 still supports older firmware: missing controls are disabled. Maintainer-supplied APK 1.3 and v29.1 app-BIN are published in Releases; integrity was verified. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
 
 ## App screenshots
 
-Screenshots supplied by WARMW00D, showing the English interface.
+App 1.3 screenshots supplied by WARMW00D: English interface.
 
 <table>
-  <tr>
-    <th>Connection</th>
-    <th>Display settings</th>
-    <th>Firmware update</th>
-  </tr>
-  <tr>
-    <td><img src="docs/images/app-connection-en.jpg" alt="HUD Control: language selection and BLE connection" width="280"></td>
-    <td><img src="docs/images/app-settings-en.jpg" alt="HUD Control: PSD, VZE, HUD language and units" width="280"></td>
-    <td><img src="docs/images/app-ota-en.jpg" alt="HUD Control: BLE OTA firmware update" width="280"></td>
-  </tr>
+  <tr><th>Connection</th><th>Display settings</th></tr>
+  <tr><td><img src="docs/images/app-connection-en.jpg" alt="Connection" width="280"></td><td><img src="docs/images/app-settings-en.jpg" alt="Display settings" width="280"></td></tr>
+  <tr><th>Tank, acceleration, tolerance</th><th>Firmware update</th></tr>
+  <tr><td><img src="docs/images/app-controls-en.jpg" alt="Tank, acceleration, tolerance" width="280"></td><td><img src="docs/images/app-ota-en.jpg" alt="Firmware update" width="280"></td></tr>
 </table>
+
+## Download firmware BIN
+
+[v29.1 release](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE/releases/tag/v29.1) · [App-BIN](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE/releases/download/v29.1/HUD-SuperMini-v29.1-app.bin) · [SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE/releases/download/v29.1/SHA256SUMS.txt).
+
+Maintainer-supplied image, **1,070,448 bytes**. ESP32-S3 header, image checksum and SHA-256 were verified. **OTA application only**: no bootloader or partition table. Initial installation requires USB with the project `partitions.csv`; this app-BIN cannot migrate partitions. The v29.0 two-slot OTA layout is compatible. Real-device OTA transfer has not been verified here.
 
 ## Download Android APK
 
-[Version 1.2 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, pending real-device OTA validation.
+[Version 1.3](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.3) — **Pre-release**, pending real-device OTA validation.
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-release.apk) — signed build for normal installation, 55,768 bytes.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-debug-test-only.apk) — 61,253 bytes; `testOnly=true`, install with `adb install -t HUD-Control-1.2-debug-test-only.apk`.
-- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/SHA256SUMS.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.3/HUD-Control-1.3-release.apk) — normal installation, 59,804 bytes.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.3/HUD-Control-1.3-debug-test-only.apk) — 65,773 bytes; `testOnly=true`: `adb install -r -t HUD-Control-1.3-debug-test-only.apk`.
+- [SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.3/SHA256SUMS.txt).
 
-Both are maintainer-supplied version 1.2 (versionCode 3). APK v2 signatures and content digests were verified. Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
+WARMW00D supplied these builds: version 1.3 (versionCode 4). APK v2 signatures and content digests were verified. Each flavor retains its previous signing key: release updates release and debug updates debug. Switching flavors requires uninstalling the app and loses its local settings.
 
 ## Features
 
@@ -142,7 +142,7 @@ OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `�
 | Services changed | Reconnect; if necessary toggle Android Bluetooth and restart HUD |
 | Cannot install over an existing app | Check application ID and signing key |
 
-The user reported the earlier settings app working. The maintainer supplied signed v1.2 APKs; signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results and real-device OTA testing are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
+The user reported the earlier settings app working. The maintainer supplied signed v1.3 APKs; signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results and real-device OTA testing are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
 
 ## Credits and license
 

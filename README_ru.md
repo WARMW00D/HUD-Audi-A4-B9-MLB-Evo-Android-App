@@ -15,34 +15,34 @@
 - **Толерантность превышения:** **0–100 км/ч**, по умолчанию **20 км/ч**; всегда вводится в км/ч, даже при отображении mph. Красная обводка проявляется от 75% допуска и полностью красная на 100%; при нуле — сразу при превышении.
 - Все три настройки подтверждаются чтением BLE и сохраняются в NVS HUD. Прежние настройки, владелец телефона и ключи шлюза сохраняются. Сброс привязки телефона кнопкой BOOT тоже сохраняет эти значения.
 
-Для новых настроек нужны **приложение 1.3 + прошивка v29.1**. Приложение 1.3 работает и со старой прошивкой: отсутствующие настройки отключены. APK из релиза v1.2 не содержит новых функций; приложение 1.3 нужно пересобрать. Здесь новые бинарники не собирались. Если уже установлена v29.0 с OTA-разделами, v29.1 использует ту же разметку; для более ранних прошивок сначала нужен переход через USB по инструкции ниже.
+Для новых настроек нужны **приложение 1.3 + прошивка v29.1**. Приложение 1.3 работает и со старой прошивкой: отсутствующие настройки отключены. Готовые APK 1.3 и app-BIN v29.1 от WARMW00D опубликованы в Releases; целостность проверена. Если уже установлена v29.0 с OTA-разделами, v29.1 использует ту же разметку; для более ранних прошивок сначала нужен переход через USB по инструкции ниже.
 
 ## Скриншоты приложения
 
-Скриншоты от WARMW00D: показана английская версия интерфейса.
+Скриншоты приложения 1.3 от WARMW00D: русский интерфейс.
 
 <table>
-  <tr>
-    <th>Подключение</th>
-    <th>Настройки дисплея</th>
-    <th>Обновление прошивки</th>
-  </tr>
-  <tr>
-    <td><img src="docs/images/app-connection-en.jpg" alt="HUD Control: выбор языка и подключение BLE" width="280"></td>
-    <td><img src="docs/images/app-settings-en.jpg" alt="HUD Control: PSD, VZE, язык HUD и единицы" width="280"></td>
-    <td><img src="docs/images/app-ota-en.jpg" alt="HUD Control: обновление прошивки по BLE OTA" width="280"></td>
-  </tr>
+  <tr><th>Подключение</th><th>Настройки дисплея</th></tr>
+  <tr><td><img src="docs/images/app-connection-ru.jpg" alt="Подключение" width="280"></td><td><img src="docs/images/app-settings-ru.jpg" alt="Настройки дисплея" width="280"></td></tr>
+  <tr><th>Бак, ускорение, толерантность</th><th>Обновление прошивки</th></tr>
+  <tr><td><img src="docs/images/app-controls-ru.jpg" alt="Бак, ускорение, толерантность" width="280"></td><td><img src="docs/images/app-ota-ru.jpg" alt="Обновление прошивки" width="280"></td></tr>
 </table>
+
+## Скачать прошивку BIN
+
+[Релиз v29.1](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE/releases/tag/v29.1) · [App-BIN](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE/releases/download/v29.1/HUD-SuperMini-v29.1-app.bin) · [SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE/releases/download/v29.1/SHA256SUMS.txt).
+
+Образ от WARMW00D, **1 070 448 байт**. Проверены ESP32-S3-заголовок, контрольная сумма и SHA-256. **Только приложение для OTA**: bootloader и таблица разделов не включены. Первая установка — через USB с `partitions.csv` проекта; app-BIN не меняет разметку. Разметка v29.0 с двумя OTA-разделами совместима. Передача OTA на реальном железе здесь ещё не проверена.
 
 ## Скачать APK Android
 
-[Версия 1.2](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, до проверки OTA на реальных устройствах.
+[Версия 1.3](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.3) — **Pre-release**, до проверки OTA на реальных устройствах.
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-release.apk) — подписанная сборка для обычной установки, 55 768 байт.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-debug-test-only.apk) — 61 253 байт; `testOnly=true`, установка: `adb install -t HUD-Control-1.2-debug-test-only.apk`.
-- [Контрольные суммы SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/SHA256SUMS.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.3/HUD-Control-1.3-release.apk) — обычная установка, 59 804 байт.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.3/HUD-Control-1.3-debug-test-only.apk) — 65 773 байт; `testOnly=true`: `adb install -r -t HUD-Control-1.3-debug-test-only.apk`.
+- [SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.3/SHA256SUMS.txt).
 
-Обе сборки предоставлены владельцем: версия 1.2 (versionCode 3). Подписи APK v2 и целостность проверены. Release и debug подписаны разными ключами: для смены нужно удалить старое приложение, его локальные настройки будут потеряны. Сохраните ключ release-подписи для будущих обновлений. OTA требует v29.0, впервые установленную через USB с двумя OTA-разделами.
+Сборки от WARMW00D: версия 1.3 (versionCode 4). Подписи APK v2 и целостность проверены. Ключи совпадают с прежними сборками соответствующего типа: release обновляется поверх release, debug поверх debug. Для смены типа требуется удаление приложения с потерей локальных настроек.
 
 ## Возможности
 
@@ -142,7 +142,7 @@ Linux/macOS: с установленным Gradle 8.9 создать Wrapper (`g
 | Сервисы изменились | Переподключиться; при необходимости переключить Bluetooth Android и перезапустить HUD |
 | Не ставится поверх старого APK | Проверить applicationId и ключ подписи |
 
-Пользователь подтвердил работу предыдущей версии приложения настроек. Владелец предоставил подписанные APK v1.2; подписи, целостность, пакет и версия проверены. Здесь APK не пересобирались; результаты lint и проверка OTA на реальном железе ещё требуются. Host-тесты прошивки проверяют протокол и ошибки, но не заменяют Android BLE-тесты. Ключи и форматные параметры RU/EN ресурсов сверены.
+Пользователь подтвердил работу предыдущей версии приложения настроек. Владелец предоставил undefined; подписи, целостность, пакет и версия проверены. Здесь APK не пересобирались; результаты lint и проверка OTA на реальном железе ещё требуются. Host-тесты прошивки проверяют протокол и ошибки, но не заменяют Android BLE-тесты. Ключи и форматные параметры RU/EN ресурсов сверены.
 
 ## Участники и лицензия
 
