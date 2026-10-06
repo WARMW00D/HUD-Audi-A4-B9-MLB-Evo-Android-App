@@ -6,13 +6,14 @@ Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD sett
 
 The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0; OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
 
-## Tank capacity and acceleration bar
+## Tank capacity, acceleration bar and overspeed tolerance
 
 Source versions: **HUD firmware v29.1 / Android app 1.3 (versionCode 4)**.
 
 - **Tank capacity:** enter a whole number from **1 to 200 litres**; default **54 L**. The capacity is always entered in litres, even with US gallons selected, and updates the HUD fuel-to-add calculation.
 - **Acceleration bar:** turn it on or off from the app. When enabled, the existing bar uses valid acceleration/speed data; it remains empty while stationary or without valid data.
-- Both settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
+- **Overspeed tolerance:** set **0–100 km/h**, default **20 km/h**, always entered in km/h even with mph selected. The red speed outline fades in from 75% of tolerance and is fully red at 100%; zero makes any positive overspeed fully red.
+- All three settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
 
 These controls need **app 1.3 + firmware v29.1**. App 1.3 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; rebuild app 1.3. New binaries were not built here. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
 
@@ -124,6 +125,7 @@ Settings service: `74d0a100-3d92-4f50-9b1a-478142000001`. Each setting is one by
 | `…0006` | Fuel volume | litres | US gallons |
 | `…0007` | Tank capacity | 1..200 litres (one unsigned byte) | — |
 | `…0008` | Acceleration bar | off | on |
+| `…0009` | Overspeed tolerance | 0..100 km/h (one unsigned byte) | — |
 
 OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `…0003`. It negotiates MTU, sends one acknowledged operation at a time and reads the confirmed offset after each chunk. Encrypted, authenticated bonding and owner identity are enforced by the HUD.
 

@@ -126,4 +126,9 @@
   <string name="accel_detail">Show the acceleration bar on the HUD when acceleration data is available.</string>
   <string name="apply">Apply</string>
   <string name="new_settings_firmware">Requires HUD firmware v29.1 or later</string>
+  <string name="tolerance">Overspeed tolerance</string>
+  <string name="tolerance_detail">0–100 km/h, default 20. Red outline fades in from 75%% of tolerance and is fully red at 100%%. At zero, any overspeed turns it fully red. Always enter km/h.</string>
+  <string name="tolerance_edit">Change tolerance</string>
+  <string name="tolerance_invalid">Enter a whole number from 0 to 100 km/h</string>
+  <string name="tolerance_value">%1$d km/h</string>
 </resources>

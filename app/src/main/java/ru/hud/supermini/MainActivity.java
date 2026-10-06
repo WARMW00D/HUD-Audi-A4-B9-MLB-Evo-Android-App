@@ -75,24 +75,25 @@ public final class MainActivity extends Activity {
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000005"),
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000006"),
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000007"),
-        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000008")
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000008"),
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000009")
     };
-    private static final int[] TITLES = {R.string.psd, R.string.vze, R.string.hud_language, R.string.units, R.string.fuel, R.string.tank, R.string.accel};
+    private static final int[] TITLES = {R.string.psd, R.string.vze, R.string.hud_language, R.string.units, R.string.fuel, R.string.tank, R.string.accel, R.string.tolerance};
     private static final int[][] CHOICES = {
         {R.string.off, R.string.on}, {R.string.off, R.string.on},
-        {R.string.russian, R.string.english}, {R.string.metric, R.string.imperial}, {R.string.litres, R.string.gallons}, null, {R.string.off, R.string.on}
+        {R.string.russian, R.string.english}, {R.string.metric, R.string.imperial}, {R.string.litres, R.string.gallons}, null, {R.string.off, R.string.on}, null
     };
     private static final int[] DETAILS = {
         R.string.psd_detail,
         R.string.vze_detail,
         R.string.language_detail,
         R.string.units_detail,
-        R.string.fuel_detail, R.string.tank_detail, R.string.accel_detail
+        R.string.fuel_detail, R.string.tank_detail, R.string.accel_detail, R.string.tolerance_detail
     };
     private static final int BG = Color.rgb(16, 24, 32), CARD = Color.rgb(26, 38, 49);
     private static final int ACCENT = Color.rgb(84, 221, 232), MUTED = Color.rgb(171, 186, 197);
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final int[] values = {-1, -1, -1, -1, -1, -1, -1};
+    private final int[] values = {-1, -1, -1, -1, -1, -1, -1, -1};
     private final BluetoothGattCharacteristic[] characteristics = new BluetoothGattCharacteristic[UUIDS.length];
     private final Button[][] choices = new Button[UUIDS.length][2];
     private final TextView[] current = new TextView[UUIDS.length];
@@ -103,8 +104,9 @@ public final class MainActivity extends Activity {
     private String appLanguage;
     private int statusKey = R.string.initial;
     private Object[] statusArgs = new Object[0];
-    private Button languageRu, languageEn, tankEdit;
-    private static final int TANK = 5;
+    private Button languageRu, languageEn;
+    private final Button[] numberEdits = new Button[UUIDS.length];
+    private static final int TANK = 5, TOLERANCE = 7;
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothGatt gatt;
@@ -228,10 +230,11 @@ public final class MainActivity extends Activity {
             card.addView(text(s(DETAILS[i]), 12, MUTED));
             current[i]=text(s(R.string.connect_first), 13, ACCENT); card.addView(current[i]);
             LinearLayout row = new LinearLayout(this);
-            if (i == TANK) {
-                tankEdit = button(s(R.string.tank_edit));
-                tankEdit.setOnClickListener(v -> editTank());
-                card.addView(tankEdit); add(root, card); continue;
+            if (i == TANK || i == TOLERANCE) {
+                Button edit = button(s(i == TANK ? R.string.tank_edit : R.string.tolerance_edit));
+                numberEdits[i] = edit;
+                edit.setOnClickListener(v -> editNumber(index));
+                card.addView(edit); add(root, card); continue;
             }
             for (int j=0; j<2; j++) {
                 final int value=j;
@@ -267,31 +270,31 @@ public final class MainActivity extends Activity {
         setContentView(scroll);
     }
 
-    private void editTank() {
-        if (!ready || characteristics[TANK] == null || active != null || !queue.isEmpty() || otaInProgress()) return;
+    private void editNumber(int index) {
+        if (!ready || characteristics[index] == null || active != null || !queue.isEmpty() || otaInProgress()) return;
         EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setSingleLine(true);
-        input.setText(values[TANK] > 0 ? Integer.toString(values[TANK]) : "54");
+        input.setText(values[index] >= 0 ? Integer.toString(values[index]) : (index == TANK ? "54" : "20"));
         input.selectAll();
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(s(R.string.tank))
-            .setMessage(s(R.string.tank_detail)).setView(input)
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(s(TITLES[index]))
+            .setMessage(s(DETAILS[index])).setView(input)
             .setNegativeButton(s(R.string.cancel), null)
             .setPositiveButton(s(R.string.apply), null).create();
         dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(b -> {
-            int litres;
-            try { litres = Integer.parseInt(input.getText().toString().trim()); }
-            catch (NumberFormatException e) { input.setError(s(R.string.tank_invalid)); return; }
-            if (!validSetting(TANK, litres)) { input.setError(s(R.string.tank_invalid)); return; }
-            change(TANK, litres); dialog.dismiss();
+            int value;
+            try { value = Integer.parseInt(input.getText().toString().trim()); }
+            catch (NumberFormatException e) { input.setError(s(index == TANK ? R.string.tank_invalid : R.string.tolerance_invalid)); return; }
+            if (!validSetting(index, value)) { input.setError(s(index == TANK ? R.string.tank_invalid : R.string.tolerance_invalid)); return; }
+            change(index, value); dialog.dismiss();
         }));
         dialog.show();
     }
     private static boolean validSetting(int index, int value) {
-        return index == TANK ? value >= 1 && value <= 200 : value == 0 || value == 1;
+        return index == TANK ? value >= 1 && value <= 200 : index == TOLERANCE ? value >= 0 && value <= 100 : value == 0 || value == 1;
     }
     private String settingText(int index, int value) {
-        return index == TANK ? s(R.string.tank_value, value) : s(CHOICES[index][value]);
+        return index == TANK ? s(R.string.tank_value, value) : index == TOLERANCE ? s(R.string.tolerance_value, value) : s(CHOICES[index][value]);
     }
 
     private static final class TextArg {
@@ -354,7 +357,7 @@ public final class MainActivity extends Activity {
             boolean supported = characteristics[i] != null;
             current[i].setText(ready && !supported ? s(R.string.new_settings_firmware) :
                 values[i] < 0 ? s(R.string.not_read) : s(R.string.current_value, settingText(i, values[i])));
-            if (i == TANK) { tankEdit.setEnabled(idle && supported); continue; }
+            if (i == TANK || i == TOLERANCE) { numberEdits[i].setEnabled(idle && supported); continue; }
             for (int j=0; j<2; j++) {
                 Button b=choices[i][j]; b.setEnabled(idle && supported); b.setAlpha(idle && supported ? 1f : 0.55f);
                 b.setBackground(bg(values[i] == j ? ACCENT : BG));

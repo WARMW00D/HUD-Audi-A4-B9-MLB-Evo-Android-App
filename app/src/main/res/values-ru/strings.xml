@@ -126,4 +126,9 @@
   <string name="accel_detail">Показывать бар на HUD при наличии данных об ускорении.</string>
   <string name="apply">Применить</string>
   <string name="new_settings_firmware">Нужна прошивка HUD v29.1 или новее</string>
+  <string name="tolerance">Толерантность превышения</string>
+  <string name="tolerance_detail">0–100 км/ч, по умолчанию 20. Обводка проявляется от 75%% допуска и полностью красная на 100%%. При нуле красная сразу при превышении. Всегда вводится в км/ч.</string>
+  <string name="tolerance_edit">Изменить допуск</string>
+  <string name="tolerance_invalid">Введите целое число от 0 до 100 км/ч</string>
+  <string name="tolerance_value">%1$d км/ч</string>
 </resources>
