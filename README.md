@@ -2,20 +2,20 @@
 
 [Русская версия](README_ru.md) · [SuperMini firmware and wiring](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE)
 
-Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.3** (`versionCode 4`), Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
+Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.4**, Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
 
 The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0; OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
 
 ## Tank capacity, acceleration bar and overspeed tolerance
 
-Source versions: **HUD firmware v29.1 / Android app 1.4 (versionCode 4)**.
+Source versions: **HUD firmware v29.1 / Android app 1.4**.
 
 - **Tank capacity:** enter a whole number from **1 to 200 litres**; default **54 L**. The capacity is always entered in litres, even with US gallons selected, and updates the HUD fuel-to-add calculation.
 - **Acceleration bar:** turn it on or off from the app. When enabled, the existing bar uses valid acceleration/speed data; it remains empty while stationary or without valid data.
 - **Overspeed tolerance:** set **0–100 km/h**, default **20 km/h**, always entered in km/h even with mph selected. The red speed outline fades in from 75% of tolerance and is fully red at 100%; zero makes any positive overspeed fully red.
 - All three settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
 
-These controls need **app 1.3 + firmware v29.1**. App 1.3 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; rebuild app 1.3. New binaries were not built here. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
+These controls need **app 1.4 + firmware v29.1**. App 1.4 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; rebuild app 1.4. New binaries were not built here. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
 
 
 - **Photoresistor calibration:** enable the optional ADC1 sensor, then save the dark point with the sensor fully covered and the bright point while illuminating it with a bright flashlight.
@@ -39,11 +39,11 @@ Screenshots supplied by WARMW00D, showing the English interface.
 
 ## Download Android APK
 
-[Version 1.4 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.4) — **Pre-release**, pending real-device OTA validation.
+[Version 1.2 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, pending real-device OTA validation.
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/HUD-Control-1.4-release.apk) — signed build for normal installation, 55,768 bytes.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/HUD-Control-1.4-debug-test-only.apk) — 61,253 bytes; `testOnly=true`, install with `adb install -t HUD-Control-1.2-debug-test-only.apk`.
-- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/SHA256SUMS.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-release.apk) — signed build for normal installation, 55,768 bytes.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-debug-test-only.apk) — 61,253 bytes; `testOnly=true`, install with `adb install -t HUD-Control-1.2-debug-test-only.apk`.
+- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/SHA256SUMS.txt).
 
 Both are maintainer-supplied version 1.2 (versionCode 3). APK v2 signatures and content digests were verified. Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
 
