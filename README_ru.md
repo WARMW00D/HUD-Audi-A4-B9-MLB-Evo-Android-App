@@ -39,13 +39,13 @@
 
 ## Скачать APK Android
 
-[Версия 1.2](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, до проверки OTA на реальных устройствах.
+[Версия 1.4](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.4).
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-release.apk) — подписанная сборка для обычной установки, 55 768 байт.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-debug-test-only.apk) — 61 253 байт; `testOnly=true`, установка: `adb install -t HUD-Control-1.2-debug-test-only.apk`.
-- [Контрольные суммы SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/SHA256SUMS.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/HUD-Control-1.4-release.apk) — подписанная сборка для обычной установки.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/HUD-Control-1.4-debug.apk) — отладочная сборка; если Android сообщает `testOnly=true`, установка: `adb install -t HUD-Control-1.4-debug.apk`.
+- [Контрольные суммы SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/SHA256SUMS.txt).
 
-Обе сборки предоставлены владельцем: версия 1.2 (versionCode 3). Подписи APK v2 и целостность проверены. Release и debug подписаны разными ключами: для смены нужно удалить старое приложение, его локальные настройки будут потеряны. Сохраните ключ release-подписи для будущих обновлений. OTA требует v29.0, впервые установленную через USB с двумя OTA-разделами.
+Release и debug подписаны разными ключами: для смены нужно удалить старое приложение, его локальные настройки будут потеряны. Сохраните ключ release-подписи для будущих обновлений. OTA требует v29.0, впервые установленную через USB с двумя OTA-разделами.
 
 ## Возможности
 
