@@ -131,4 +131,14 @@
   <string name="tolerance_edit">Change tolerance</string>
   <string name="tolerance_invalid">Enter a whole number from 0 to 100 km/h</string>
   <string name="tolerance_value">%1$d km/h</string>
+  <string name="light_sensor">Photoresistor</string>
+  <string name="light_sensor_detail">Optional ADC1 sensor used when RLS_01 data is unavailable.</string>
+  <string name="light_dark">Dark calibration</string>
+  <string name="light_dark_detail">Close the sensor completely, then save this point once.</string>
+  <string name="light_bright">Bright calibration</string>
+  <string name="light_bright_detail">Illuminate the sensor with a bright flashlight, then save this point once.</string>
+  <string name="light_dark_action">Save dark point</string>
+  <string name="light_bright_action">Save bright point</string>
+  <string name="light_calibrated">Point recorded</string>
+  <string name="light_not_calibrated">Point not recorded</string>
 </resources>

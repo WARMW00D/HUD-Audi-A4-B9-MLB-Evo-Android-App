@@ -131,4 +131,14 @@
   <string name="tolerance_edit">Изменить допуск</string>
   <string name="tolerance_invalid">Введите целое число от 0 до 100 км/ч</string>
   <string name="tolerance_value">%1$d км/ч</string>
+  <string name="light_sensor">Фоторезистор</string>
+  <string name="light_sensor_detail">Опциональный датчик ADC1, используется при отсутствии данных RLS_01.</string>
+  <string name="light_dark">Калибровка темноты</string>
+  <string name="light_dark_detail">Полностью закройте сенсор и сохраните эту точку один раз.</string>
+  <string name="light_bright">Калибровка яркости</string>
+  <string name="light_bright_detail">Посветите на сенсор ярким фонариком и сохраните эту точку один раз.</string>
+  <string name="light_dark_action">Сохранить «темно»</string>
+  <string name="light_bright_action">Сохранить «ярко»</string>
+  <string name="light_calibrated">Точка записана</string>
+  <string name="light_not_calibrated">Точка не записана</string>
 </resources>
