@@ -39,13 +39,13 @@ Screenshots supplied by WARMW00D, showing the English interface.
 
 ## Download Android APK
 
-[Version 1.2 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.2) — **Pre-release**, pending real-device OTA validation.
+[Version 1.4 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.4).
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-release.apk) — signed build for normal installation, 55,768 bytes.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/HUD-Control-1.2-debug-test-only.apk) — 61,253 bytes; `testOnly=true`, install with `adb install -t HUD-Control-1.2-debug-test-only.apk`.
-- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.2/SHA256SUMS.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/HUD-Control-1.4-release.apk) — signed build for normal installation.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/HUD-Control-1.4-debug.apk) — debug build; install with `adb install -t HUD-Control-1.4-debug.apk` if Android reports `testOnly=true`.
+- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4/SHA256SUMS.txt).
 
-Both are maintainer-supplied version 1.2 (versionCode 3). APK v2 signatures and content digests were verified. Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
+Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
 
 ## Features
 
