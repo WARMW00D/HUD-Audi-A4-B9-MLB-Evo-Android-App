@@ -1,0 +1,2 @@
+d6861727bd4c8eea087e43ba8fc3a002a656cce60021aa12c7e949e6b3684560  HUD-Control-1.4.1-debug.apk
+5e406de28013fad6fadb73dafa49668b9c19f58efd9e82a5e2a89138d30c1822  HUD-Control-1.4.1-release.apk
