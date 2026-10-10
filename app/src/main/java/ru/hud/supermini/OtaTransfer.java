@@ -47,6 +47,7 @@ final class OtaTransfer {
         busy=true; step=Step.MTU; listener.progress(0,image.length);
         listener.status(R.string.ota_negotiating);
         try {
+            gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
             if (!gatt.requestMtu(247)) { error(R.string.ota_mtu); return; }
             arm();
         } catch (RuntimeException e) { error(R.string.ota_transport_error,e.getMessage()); }
@@ -54,6 +55,7 @@ final class OtaTransfer {
     void disconnected() { busy=false; main.removeCallbacks(timeout); }
     void cancel() {
         if (!busy || commitRequested) return;
+        gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
         cancelRequested=true; listener.status(R.string.ota_cancelling);
         // Wait for the current operation to finish; never overlap GATT operations.
     }
@@ -117,7 +119,8 @@ final class OtaTransfer {
                 listener.status(R.string.ota_success); listener.finished(true); break;
             case ABORT_READ:
                 if (state!=0 || received!=0 || total!=0 || code!=0) { error(R.string.ota_protocol_error); break; }
-                busy=false; listener.status(R.string.ota_cancelled); listener.finished(false); break;
+                busy=false; gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
+                listener.status(R.string.ota_cancelled); listener.finished(false); break;
             default: error(R.string.ota_protocol_error);
         }
         return true;
@@ -162,6 +165,7 @@ final class OtaTransfer {
     private void disarm() { main.removeCallbacks(timeout); }
     private void error(int key,Object... args) {
         busy=false; disarm();
+        if (!commitRequested) gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
         // After requesting COMMIT, an absent ACK cannot prove that boot selection failed.
         if (commitRequested) listener.error(R.string.ota_result_unknown);
         else listener.error(key,args);

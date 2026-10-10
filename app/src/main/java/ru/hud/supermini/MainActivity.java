@@ -729,7 +729,16 @@ public final class MainActivity extends Activity {
             }
             @Override public void finished(boolean committed) {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                if (committed) note(R.string.ota_success);
+                if (committed) {
+                    // The HUD normally disconnects while rebooting, but Android may not
+                    // deliver that callback. Tear down the old GATT session ourselves so
+                    // the settings UI is usable immediately after a successful OTA.
+                    otaReceived = otaTotal = 0;
+                    closeGatt();
+                    note(R.string.ota_success);
+                } else {
+                    ota = null; otaReceived = otaTotal = 0;
+                }
                 if (!destroyed) render();
             }
             @Override public void error(int key,Object... args) {
@@ -743,6 +752,7 @@ public final class MainActivity extends Activity {
     private void closeGatt() {
         main.removeCallbacks(connectionTimeout); main.removeCallbacks(operationTimeout);
         if (ota!=null) ota.disconnected();
+        ota = null;
         otaControl=otaData=null;
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         BluetoothGatt old=gatt; gatt=null; queue.clear(); active=null;
