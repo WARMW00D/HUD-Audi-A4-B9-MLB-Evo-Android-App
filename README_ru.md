@@ -45,7 +45,7 @@
 
 - [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/HUD-Control-1.5.0-release.apk) — подписанная сборка для обычной установки.
 - [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/HUD-Control-1.5.0-debug.apk) — отладочная сборка; если Android сообщает `testOnly=true`, установка: `adb install -t HUD-Control-1.5.0-debug.apk`.
-- [Контрольные суммы SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/SHA256SUMS.txt).
+- [Контрольные суммы SHA-256](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/SHA256SUMS-1.5.0.txt).
 
 Release и debug подписаны разными ключами: для смены нужно удалить старое приложение, его локальные настройки будут потеряны. Сохраните ключ release-подписи для будущих обновлений. OTA требует v29.0, впервые установленную через USB с двумя OTA-разделами.
 
