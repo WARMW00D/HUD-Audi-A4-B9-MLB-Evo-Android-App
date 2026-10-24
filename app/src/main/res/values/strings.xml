@@ -127,7 +127,7 @@
   <string name="apply">Apply</string>
   <string name="new_settings_firmware">Requires HUD firmware v29.1 or later</string>
   <string name="tolerance">Overspeed tolerance</string>
-  <string name="tolerance_detail">0–100 km/h, default 20. Red outline fades in from 75%% of tolerance and is fully red at 100%%. At zero, any overspeed turns it fully red. Always enter km/h.</string>
+  <string name="tolerance_detail">0–100 km/h, default 20. Speed digits fade to red from 75%% of tolerance and are fully red at 100%%. At zero, any overspeed turns them fully red. Always enter km/h.</string>
   <string name="tolerance_edit">Change tolerance</string>
   <string name="tolerance_invalid">Enter a whole number from 0 to 100 km/h</string>
   <string name="tolerance_value">%1$d km/h</string>
@@ -141,4 +141,36 @@
   <string name="light_bright_action">Save bright point</string>
   <string name="light_calibrated">Point recorded</string>
   <string name="light_not_calibrated">Point not recorded</string>
+  <string name="cam_title">Speed camera database</string>
+  <string name="cam_hint">Select cams.bin made by gen_cams.py. It is written to the HUD flash (W25Q128) and takes effect immediately, no restart. Keep HUD powered and the app open.</string>
+  <string name="cam_select_hint">Connect to HUD, then select cams.bin.</string>
+  <string name="cam_choose">Choose cams.bin</string>
+  <string name="cam_upload">Upload database</string>
+  <string name="cam_no_file">No database file selected</string>
+  <string name="cam_file">%1$s · %2$d bytes</string>
+  <string name="cam_old_firmware">This HUD firmware has no camera database upload (needs v31).</string>
+  <string name="cam_no_flash">The HUD does not see its W25Q flash chip. Check the wiring.</string>
+  <string name="cam_capacity">Database does not fit (the HUD accepts up to %1$d bytes: flash and PSRAM limit).</string>
+  <string name="cam_erasing">Preparing the HUD flash…</string>
+  <string name="cam_sending">Transferring database…</string>
+  <string name="cam_verifying">Verifying SHA-256…</string>
+  <string name="cam_loading_db">Writing header and loading the database into memory…</string>
+  <string name="cam_success">Database uploaded and active. No restart needed.</string>
+  <string name="cam_device_error">HUD rejected the database. Code: %1$d (4 = flash write, 6 = checksum, 7 = not a CAM1 file).</string>
+  <string name="cam_stalled">Too many lost packets. Move the phone closer to the HUD and retry.</string>
+  <string name="cam_result_unknown">No final confirmation from the HUD. Reconnect and check the camera log or upload again.</string>
+  <string name="cam_file_too_large">File is larger than %1$d bytes.</string>
+  <string name="cam_invalid_file">Not a cams.bin file (expected CAM1 header and a matching size).</string>
+  <string name="cam_file_ready">Database ready: %1$d cameras, dated %2$s. Tap Upload database.</string>
+  <string name="cam_confirm_title">Upload camera database?</string>
+  <string name="cam_confirm">%1$s\n%2$d bytes\n\nThe database stored in the HUD is replaced. Keep power on until the end.</string>
+  <string name="cams_show">Speed cameras</string>
+  <string name="cams_show_detail">Show the speed-camera sign on the HUD (needs the camera database and GPS from the car).</string>
+  <string name="cams_beep">Camera warning sound</string>
+  <string name="cams_beep_detail">Beep when a camera appears and the speed is above its limit.</string>
+  <string name="volume">Sound volume</string>
+  <string name="volume_detail">0–100%%, 0 is silent. Applies to the speaker on the HUD. After saving, the HUD plays a short beep.</string>
+  <string name="volume_edit">Change volume</string>
+  <string name="volume_invalid">Enter a whole number from 0 to 100</string>
+  <string name="volume_value">%1$d%%</string>
 </resources>

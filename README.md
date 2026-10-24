@@ -2,20 +2,22 @@
 
 [Русская версия](README_ru.md) · [SuperMini firmware and wiring](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE)
 
-Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.4.1**, Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
+Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.5.0**, Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
 
-The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0; OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
+The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0 or later (current: v30.0.x); OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
 
 ## Tank capacity, acceleration bar and overspeed tolerance
 
-Source versions: **HUD firmware v29.1 / Android app 1.4.1**.
+Source versions: **HUD firmware v31.0.0 / Android app 1.5.0 (versionCode 7)**.
+
+App 1.5.0 (source) adds the **speed-camera database upload** (needs firmware v31) and keeps the 1.4.2 text fix: it corrects the overspeed-tolerance hint text in the app: the HUD has no red outline, the speed digits turn red. The published APKs below are 1.4.1; function is identical.
 
 - **Tank capacity:** enter a whole number from **1 to 200 litres**; default **54 L**. The capacity is always entered in litres, even with US gallons selected, and updates the HUD fuel-to-add calculation.
 - **Acceleration bar:** turn it on or off from the app. When enabled, the existing bar uses valid acceleration/speed data; it remains empty while stationary or without valid data.
-- **Overspeed tolerance:** set **0–100 km/h**, default **20 km/h**, always entered in km/h even with mph selected. The red speed outline fades in from 75% of tolerance and is fully red at 100%; zero makes any positive overspeed fully red.
+- **Overspeed tolerance:** set **0–100 km/h**, default **20 km/h**, always entered in km/h even with mph selected. The speed digits fade from white to red starting at 75% of the tolerance and are fully red at 100%; zero makes any positive overspeed fully red.
 - All three settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
 
-These controls need **app 1.4.1 + firmware v29.1**. App 1.4.1 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; rebuild app 1.4.1. New binaries were not built here. If v29.0 and its OTA partition table are already installed, v29.1 uses the same layout; earlier firmware needs the initial USB/partition upgrade described below.
+These controls need **app 1.4.1 + firmware v29.1 or later (current: v30.0.x)**. App 1.4.1 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; use release 1.4.1. If v29.0 and its OTA partition table are already installed, v29.1 and v30.x use the same layout; earlier firmware needs the initial USB/partition upgrade described below.
 
 
 - **Photoresistor calibration:** enable the optional ADC1 sensor, then save the dark point with the sensor fully covered and the bright point while illuminating it with a bright flashlight.
@@ -57,6 +59,7 @@ Release and debug use different signing keys: switching requires uninstalling th
 | Units | km/h, km, m or mph, mi, ft; litres or US gallons |
 | Traffic signs | Enable/disable PSD and VZE separately |
 | Confirmed settings | BLE write with response, then read back; firmware stores settings in NVS |
+| Speed-camera database | Upload `cams.bin` over BLE into the HUD's W25Q128 flash; streamed Write Without Response windows with automatic resume, SHA-256 check, instant activation without restart (firmware v31) |
 | BLE OTA | Android file picker, application-image checks, SHA-256, progress and cancellation |
 | Update result | Separate verification/commit phase; uncertain final ACK prompts restart/check |
 
@@ -132,6 +135,11 @@ Settings service: `74d0a100-3d92-4f50-9b1a-478142000001`. Each setting is one by
 | `…000A` | Photoresistor enabled | off | on |
 | `…000B` | Capture dark calibration | write `01` | — |
 | `…000C` | Capture bright calibration | write `01` | — |
+| `…000D` | Speed cameras shown (firmware v31) | off | on |
+| `…000E` | Camera warning sound (v31) | off | on |
+| `…000F` | Sound volume (v31) | 0..100 % (0 = silent) | — |
+
+Camera database service (firmware v31): `74d0a200-3d92-4f50-9b1a-478142000011`; control `…0012`, data `…0013` (Write Without Response). Same control commands as OTA, but packets are streamed in windows of 8 and the status is read after each window; the HUD ignores a gap and the app resumes from the confirmed offset. See the firmware repository `docs/CAMS_UPLOAD.md`.
 
 OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `…0003`. It negotiates MTU, sends one acknowledged operation at a time and reads the confirmed offset after each chunk. Encrypted, authenticated bonding and owner identity are enforced by the HUD.
 
@@ -148,7 +156,7 @@ OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `�
 | Services changed | Reconnect; if necessary toggle Android Bluetooth and restart HUD |
 | Cannot install over an existing app | Check application ID and signing key |
 
-The user reported the earlier settings app working. The maintainer supplied signed v1.2 APKs; signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results and real-device OTA testing are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
+The maintainer confirmed on the real HUD that the app works, including BLE OTA. The maintainer supplied signed APKs (current: 1.4.1); signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
 
 ## Credits and license
 

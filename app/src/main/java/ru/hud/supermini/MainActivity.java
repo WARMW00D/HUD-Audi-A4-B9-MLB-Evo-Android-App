@@ -65,8 +65,9 @@ import java.util.UUID;
 /** All connection state and GATT operations are serialized on the main thread. */
 @SuppressLint("MissingPermission")
 public final class MainActivity extends Activity {
-    private static final int PERMISSIONS = 20, ENABLE_BT = 21, PICK_BIN = 22;
+    private static final int PERMISSIONS = 20, ENABLE_BT = 21, PICK_BIN = 22, PICK_CAMS = 23;
     private static final int MAX_BIN_SIZE = 0x1f0000;
+    private static final int MAX_CAM_SIZE = 8 * 1024 * 1024;
     private static final UUID SERVICE = UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000001");
     private static final UUID[] UUIDS = {
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000002"),
@@ -79,12 +80,16 @@ public final class MainActivity extends Activity {
         UUID.fromString("74d0a100-3d92-4f50-9b1a-478142000009"),
         UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000A"),
         UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000B"),
-        UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000C")
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000C"),
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000D"),
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000E"),
+        UUID.fromString("74d0a100-3d92-4f50-9b1a-47814200000F")
     };
-    private static final int[] TITLES = {R.string.psd, R.string.vze, R.string.hud_language, R.string.units, R.string.fuel, R.string.tank, R.string.accel, R.string.tolerance, R.string.light_sensor, R.string.light_dark, R.string.light_bright};
+    private static final int[] TITLES = {R.string.psd, R.string.vze, R.string.hud_language, R.string.units, R.string.fuel, R.string.tank, R.string.accel, R.string.tolerance, R.string.light_sensor, R.string.light_dark, R.string.light_bright, R.string.cams_show, R.string.cams_beep, R.string.volume};
     private static final int[][] CHOICES = {
         {R.string.off, R.string.on}, {R.string.off, R.string.on},
-        {R.string.russian, R.string.english}, {R.string.metric, R.string.imperial}, {R.string.litres, R.string.gallons}, null, {R.string.off, R.string.on}, null, {R.string.off, R.string.on}, null, null
+        {R.string.russian, R.string.english}, {R.string.metric, R.string.imperial}, {R.string.litres, R.string.gallons}, null, {R.string.off, R.string.on}, null, {R.string.off, R.string.on}, null, null,
+        {R.string.off, R.string.on}, {R.string.off, R.string.on}, null
     };
     private static final int[] DETAILS = {
         R.string.psd_detail,
@@ -92,12 +97,13 @@ public final class MainActivity extends Activity {
         R.string.language_detail,
         R.string.units_detail,
         R.string.fuel_detail, R.string.tank_detail, R.string.accel_detail, R.string.tolerance_detail,
-        R.string.light_sensor_detail, R.string.light_dark_detail, R.string.light_bright_detail
+        R.string.light_sensor_detail, R.string.light_dark_detail, R.string.light_bright_detail,
+        R.string.cams_show_detail, R.string.cams_beep_detail, R.string.volume_detail
     };
     private static final int BG = Color.rgb(16, 24, 32), CARD = Color.rgb(26, 38, 49);
     private static final int ACCENT = Color.rgb(84, 221, 232), MUTED = Color.rgb(171, 186, 197);
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final int[] values = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    private final int[] values = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     private final BluetoothGattCharacteristic[] characteristics = new BluetoothGattCharacteristic[UUIDS.length];
     private final Button[][] choices = new Button[UUIDS.length][2];
     private final TextView[] current = new TextView[UUIDS.length];
@@ -110,7 +116,7 @@ public final class MainActivity extends Activity {
     private Object[] statusArgs = new Object[0];
     private Button languageRu, languageEn;
     private final Button[] numberEdits = new Button[UUIDS.length];
-    private static final int TANK = 5, TOLERANCE = 7, LIGHT = 8, DARK = 9, BRIGHT = 10;
+    private static final int TANK = 5, TOLERANCE = 7, LIGHT = 8, DARK = 9, BRIGHT = 10, VOLUME = 13;
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothGatt gatt;
@@ -131,6 +137,18 @@ public final class MainActivity extends Activity {
     private final ExecutorService fileWorker = Executors.newSingleThreadExecutor();
     private BluetoothGattCharacteristic otaControl, otaData;
     private OtaTransfer ota;
+    // Speed-camera database (cams.bin) upload
+    private Button chooseCams, uploadCams, cancelCams;
+    private TextView camsLabel, camsStatus, camsProgressLabel;
+    private ProgressBar camsProgress;
+    private int camsStatusKey = R.string.cam_select_hint;
+    private Object[] camsStatusArgs = new Object[0];
+    private int camsReceived, camsTotal;
+    private byte[] camsBytes, camsSha;
+    private String camsName = "";
+    private boolean loadingCams;
+    private BluetoothGattCharacteristic camControl, camData;
+    private CamTransfer cam;
     private boolean scanning, connected, waitingBond, discovering, ready, destroyed;
     private Runnable pendingAction;
     private Op active;
@@ -234,8 +252,8 @@ public final class MainActivity extends Activity {
             card.addView(text(s(DETAILS[i]), 12, MUTED));
             current[i]=text(s(R.string.connect_first), 13, ACCENT); card.addView(current[i]);
             LinearLayout row = new LinearLayout(this);
-            if (i == TANK || i == TOLERANCE) {
-                Button edit = button(s(i == TANK ? R.string.tank_edit : R.string.tolerance_edit));
+            if (i == TANK || i == TOLERANCE || i == VOLUME) {
+                Button edit = button(s(i == TANK ? R.string.tank_edit : i == VOLUME ? R.string.volume_edit : R.string.tolerance_edit));
                 numberEdits[i] = edit;
                 edit.setOnClickListener(v -> editNumber(index));
                 card.addView(edit); add(root, card); continue;
@@ -277,6 +295,25 @@ public final class MainActivity extends Activity {
         updateFirmware.setOnClickListener(v -> confirmUpdate()); add(root, updateFirmware);
         cancelOta=button(s(R.string.ota_cancel));
         cancelOta.setOnClickListener(v -> { if (ota!=null) ota.cancel(); }); add(root, cancelOta);
+        add(root, text(s(R.string.cam_title), 22, Color.WHITE));
+        add(root, text(s(R.string.cam_hint), 13, MUTED));
+        camsLabel=text("", 13, MUTED); add(root, camsLabel);
+        camsStatus=text("", 14, ACCENT); add(root, camsStatus);
+        camsProgress=new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        camsProgress.setMax(100); add(root, camsProgress);
+        camsProgressLabel=text("", 12, MUTED); add(root, camsProgressLabel);
+        chooseCams=button(s(R.string.cam_choose));
+        chooseCams.setOnClickListener(v -> {
+            if (!camIdle()) return;
+            Intent pick=new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            pick.setType("*/*"); pick.addCategory(Intent.CATEGORY_OPENABLE);
+            pick.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(pick,PICK_CAMS);
+        }); add(root, chooseCams);
+        uploadCams=button(s(R.string.cam_upload));
+        uploadCams.setOnClickListener(v -> confirmCams()); add(root, uploadCams);
+        cancelCams=button(s(R.string.ota_cancel));
+        cancelCams.setOnClickListener(v -> { if (cam!=null) cam.cancel(); }); add(root, cancelCams);
         setContentView(scroll);
     }
 
@@ -285,7 +322,7 @@ public final class MainActivity extends Activity {
         EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setSingleLine(true);
-        input.setText(values[index] >= 0 ? Integer.toString(values[index]) : (index == TANK ? "54" : "20"));
+        input.setText(values[index] >= 0 ? Integer.toString(values[index]) : (index == TANK ? "54" : index == VOLUME ? "100" : "20"));
         input.selectAll();
         AlertDialog dialog = new AlertDialog.Builder(this).setTitle(s(TITLES[index]))
             .setMessage(s(DETAILS[index])).setView(input)
@@ -294,20 +331,21 @@ public final class MainActivity extends Activity {
         dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(b -> {
             int value;
             try { value = Integer.parseInt(input.getText().toString().trim()); }
-            catch (NumberFormatException e) { input.setError(s(index == TANK ? R.string.tank_invalid : R.string.tolerance_invalid)); return; }
-            if (!validSetting(index, value)) { input.setError(s(index == TANK ? R.string.tank_invalid : R.string.tolerance_invalid)); return; }
+            catch (NumberFormatException e) { input.setError(s(index == TANK ? R.string.tank_invalid : index == VOLUME ? R.string.volume_invalid : R.string.tolerance_invalid)); return; }
+            if (!validSetting(index, value)) { input.setError(s(index == TANK ? R.string.tank_invalid : index == VOLUME ? R.string.volume_invalid : R.string.tolerance_invalid)); return; }
             change(index, value); dialog.dismiss();
         }));
         dialog.show();
     }
     private static boolean validSetting(int index, int value) {
         if (index == TANK) return value >= 1 && value <= 200;
-        if (index == TOLERANCE) return value >= 0 && value <= 100;
+        if (index == TOLERANCE || index == VOLUME) return value >= 0 && value <= 100;
         return value == 0 || value == 1;
     }
     private String settingText(int index, int value) {
         if (index == TANK) return s(R.string.tank_value, value);
         if (index == TOLERANCE) return s(R.string.tolerance_value, value);
+        if (index == VOLUME) return s(R.string.volume_value, value);
         if (index == DARK || index == BRIGHT) return value == 1 ? s(R.string.light_calibrated) : s(R.string.light_not_calibrated);
         return s(CHOICES[index][value]);
     }
@@ -359,6 +397,13 @@ public final class MainActivity extends Activity {
         paired.setEnabled(!busy && !scanning); scan.setEnabled(!busy);
         scan.setText(scanning ? s(R.string.stop_search) : s(R.string.find));
         disconnect.setEnabled(busy && !otaInProgress()); refresh.setEnabled(idle);
+        chooseCams.setEnabled(camIdle());
+        uploadCams.setEnabled(camIdle() && camsBytes!=null);
+        cancelCams.setEnabled(cam!=null && cam.busy() && !cam.commitRequested());
+        camsLabel.setText(camsBytes==null ? s(R.string.cam_no_file) : s(R.string.cam_file,camsName,camsBytes.length));
+        camsStatus.setText(gatt!=null && ready && camControl==null ? s(R.string.cam_old_firmware) : s(camsStatusKey,camsStatusArgs));
+        camsProgress.setProgress(camsTotal==0 ? 0 : (int)((long)camsReceived*100/camsTotal));
+        camsProgressLabel.setText(camsTotal==0 ? "" : s(R.string.ota_progress,(int)((long)camsReceived*100/camsTotal),camsReceived,camsTotal));
         chooseBin.setEnabled(otaIdle());
         updateFirmware.setEnabled(otaIdle() && firmwareBytes!=null);
         cancelOta.setEnabled(ota!=null && ota.busy() && !ota.commitRequested());
@@ -372,7 +417,7 @@ public final class MainActivity extends Activity {
             boolean supported = characteristics[i] != null;
             current[i].setText(ready && !supported ? s(R.string.new_settings_firmware) :
                 values[i] < 0 ? s(R.string.not_read) : s(R.string.current_value, settingText(i, values[i])));
-            if (i == TANK || i == TOLERANCE || i == DARK || i == BRIGHT) { numberEdits[i].setEnabled(idle && supported); continue; }
+            if (i == TANK || i == TOLERANCE || i == VOLUME || i == DARK || i == BRIGHT) { numberEdits[i].setEnabled(idle && supported); continue; }
             for (int j=0; j<2; j++) {
                 Button b=choices[i][j]; b.setEnabled(idle && supported); b.setAlpha(idle && supported ? 1f : 0.55f);
                 b.setBackground(bg(values[i] == j ? ACCENT : BG));
@@ -408,6 +453,10 @@ public final class MainActivity extends Activity {
     }
     @Override protected void onActivityResult(int request, int result, Intent data) {
         super.onActivityResult(request, result, data);
+        if (request==PICK_CAMS) {
+            if (result==RESULT_OK && data!=null && data.getData()!=null) loadCams(data.getData());
+            return;
+        }
         if (request==PICK_BIN) {
             if (result==RESULT_OK && data!=null && data.getData()!=null) loadFirmware(data.getData());
             return;
@@ -531,12 +580,19 @@ public final class MainActivity extends Activity {
             });
         }
         @Override public void onMtuChanged(BluetoothGatt g,int mtu,int code) {
-            main.post(() -> { if (!destroyed && ota!=null) ota.mtu(g,mtu,code); });
+            main.post(() -> { if (!destroyed && ota!=null) ota.mtu(g,mtu,code); if (!destroyed && cam!=null) cam.mtu(g,mtu,code); });
         }
         @Override public void onConnectionStateChange(BluetoothGatt g, int code, int state) {
             main.post(() -> {
                 if (g != gatt || destroyed) return;
                 if (code != BluetoothGatt.GATT_SUCCESS || state == BluetoothProfile.STATE_DISCONNECTED) {
+                    if (cam!=null && cam.busy()) {
+                        boolean unknown=cam.commitRequested();
+                        closeGatt();
+                        note(unknown ? R.string.cam_result_unknown : R.string.ota_disconnected);
+                        camNote(unknown ? R.string.cam_result_unknown : R.string.ota_disconnected);
+                        return;
+                    }
                     if (ota!=null && ota.commitRequested()) {
                         boolean confirmed=ota.commitConfirmed();
                         closeGatt();
@@ -585,6 +641,15 @@ public final class MainActivity extends Activity {
                     (otaData.getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE)==0) {
                     otaControl=otaData=null;
                 }
+                BluetoothGattService camService=g.getService(CamTransfer.SERVICE);
+                camControl=camService==null ? null : camService.getCharacteristic(CamTransfer.CONTROL);
+                camData=camService==null ? null : camService.getCharacteristic(CamTransfer.DATA);
+                if (camControl==null || camData==null ||
+                    (camControl.getProperties() & (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE)) !=
+                        (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE) ||
+                    (camData.getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)==0) {
+                    camControl=camData=null;
+                }
                 BluetoothGatt expected=gatt;
                 main.postDelayed(() -> { if (gatt == expected) readAll(); }, 500);
             });
@@ -600,6 +665,7 @@ public final class MainActivity extends Activity {
         @Override public void onCharacteristicWrite(BluetoothGatt g, BluetoothGattCharacteristic c, int code) {
             main.post(() -> {
                 if (ota!=null && ota.wrote(g,c,code)) return;
+                if (cam!=null && cam.wrote(g,c,code)) return;
                 if (!matches(g, c, true)) return;
                 if (code != BluetoothGatt.GATT_SUCCESS) { fail(R.string.write_error, code); return; }
                 Op written=active; active=null; main.removeCallbacks(operationTimeout);
@@ -614,6 +680,7 @@ public final class MainActivity extends Activity {
     }
     private void readResult(BluetoothGatt g, BluetoothGattCharacteristic c, byte[] bytes, int code) {
         if (ota!=null && ota.read(g,c,bytes,code)) return;
+        if (cam!=null && cam.read(g,c,bytes,code)) return;
         if (!matches(g, c, false)) return;
         if (code != BluetoothGatt.GATT_SUCCESS || bytes == null || bytes.length != 1 || !validSetting(active.index, bytes[0] & 255)) {
             fail(R.string.read_error, code); return;
@@ -661,10 +728,10 @@ public final class MainActivity extends Activity {
     }
 
     private boolean otaInProgress() {
-        return ota!=null && (ota.busy() || ota.commitRequested());
+        return (ota!=null && (ota.busy() || ota.commitRequested())) || (cam!=null && (cam.busy() || cam.commitRequested()));
     }
     private boolean otaIdle() {
-        return ready && active==null && queue.isEmpty() && otaControl!=null && otaData!=null && !otaInProgress() && !loadingBin;
+        return ready && active==null && queue.isEmpty() && otaControl!=null && otaData!=null && !otaInProgress() && !loadingBin && !loadingCams;
     }
     private void otaNote(int key,Object... args) {
         otaStatusKey=key; otaStatusArgs=args.clone();
@@ -711,6 +778,85 @@ public final class MainActivity extends Activity {
             }
         });
     }
+    private boolean camIdle() {
+        return ready && active==null && queue.isEmpty() && camControl!=null && camData!=null && !otaInProgress() && !loadingBin && !loadingCams;
+    }
+    private void camNote(int key,Object... args) {
+        camsStatusKey=key; camsStatusArgs=args.clone();
+        if (!destroyed) render();
+    }
+    private void loadCams(Uri uri) {
+        if (!camIdle()) return;
+        camsBytes=camsSha=null; camsName="";
+        loadingCams=true; camNote(R.string.ota_loading); render();
+        fileWorker.execute(() -> {
+            try {
+                String filename="cams.bin";
+                try (Cursor cursor=getContentResolver().query(uri,new String[]{OpenableColumns.DISPLAY_NAME},null,null,null)) {
+                    if (cursor!=null && cursor.moveToFirst()) {
+                        String name=cursor.getString(0); if (name!=null) filename=name;
+                    }
+                }
+                byte[] binary;
+                try (InputStream input=getContentResolver().openInputStream(uri); ByteArrayOutputStream output=new ByteArrayOutputStream()) {
+                    if (input==null) throw new IllegalArgumentException("No file stream");
+                    byte[] buffer=new byte[16384]; int count;
+                    while ((count=input.read(buffer))!=-1) {
+                        if (Thread.currentThread().isInterrupted()) return;
+                        if ((long)output.size()+count>MAX_CAM_SIZE) {
+                            main.post(() -> { if (!destroyed) { loadingCams=false; camNote(R.string.cam_file_too_large,MAX_CAM_SIZE); } }); return;
+                        }
+                        output.write(buffer,0,count);
+                    }
+                    binary=output.toByteArray();
+                }
+                // "CAM1", record count, date, reserved; then 12-byte records (tools/gen_cams.py)
+                ByteBuffer header=ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
+                if (binary.length<28 || binary[0]!='C' || binary[1]!='A' || binary[2]!='M' || binary[3]!='1' ||
+                    (long)binary.length!=16L+12L*(header.getInt(4)&0xffffffffL)) {
+                    main.post(() -> { if (!destroyed) { loadingCams=false; camNote(R.string.cam_invalid_file); } }); return;
+                }
+                int count=header.getInt(4), date=header.getInt(8);
+                byte[] digest=MessageDigest.getInstance("SHA-256").digest(binary);
+                String selected=filename;
+                main.post(() -> {
+                    if (destroyed) return;
+                    camsName=selected; camsBytes=binary; camsSha=digest;
+                    loadingCams=false; camsReceived=camsTotal=0;
+                    camNote(R.string.cam_file_ready,count,String.format(java.util.Locale.US,"%06d",date));
+                });
+            } catch (Exception e) {
+                main.post(() -> { if (!destroyed) { loadingCams=false; camNote(R.string.ota_file_error,e.getMessage()); } });
+            }
+        });
+    }
+    private void confirmCams() {
+        if (!camIdle() || camsBytes==null) return;
+        new AlertDialog.Builder(this).setTitle(s(R.string.cam_confirm_title))
+            .setMessage(s(R.string.cam_confirm,camsName,camsBytes.length))
+            .setNegativeButton(s(R.string.cancel),null)
+            .setPositiveButton(s(R.string.cam_upload),(dialog,which) -> startCams()).show();
+    }
+    private void startCams() {
+        if (!camIdle() || camsBytes==null) return;
+        camsReceived=0; camsTotal=camsBytes.length;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        cam=new CamTransfer(gatt,camControl,camData,main,new CamTransfer.Listener() {
+            @Override public void status(int key,Object... args) { camNote(key,args); }
+            @Override public void progress(int received,int total) {
+                camsReceived=received; camsTotal=total; if (!destroyed) render();
+            }
+            @Override public void finished(boolean done) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                cam = null; if (!done) camsReceived = camsTotal = 0;
+                if (!destroyed) render();
+            }
+            @Override public void error(int key,Object... args) {
+                closeGatt(); note(key,args); camNote(key,args);
+            }
+        },camsBytes,camsSha);
+        cam.start(); render();
+    }
     private void confirmUpdate() {
         if (!otaIdle() || firmwareBytes==null) return;
         new AlertDialog.Builder(this).setTitle(s(R.string.ota_confirm_title))
@@ -753,7 +899,9 @@ public final class MainActivity extends Activity {
         main.removeCallbacks(connectionTimeout); main.removeCallbacks(operationTimeout);
         if (ota!=null) ota.disconnected();
         ota = null;
-        otaControl=otaData=null;
+        if (cam!=null) cam.disconnected();
+        cam = null;
+        otaControl=otaData=null; camControl=camData=null;
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         BluetoothGatt old=gatt; gatt=null; queue.clear(); active=null;
         ready=false; connected=false; waitingBond=false; discovering=false;
