@@ -10,14 +10,14 @@ The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A
 
 Source versions: **HUD firmware v31.0.0 / Android app 1.5.0 (versionCode 7)**.
 
-App 1.5.0 (source) adds the **speed-camera database upload** (needs firmware v31) and keeps the 1.4.2 text fix: it corrects the overspeed-tolerance hint text in the app: the HUD has no red outline, the speed digits turn red. The published APKs below are 1.4.1; function is identical.
+App 1.5.0 (source) adds the **speed-camera database upload** (needs firmware v31) and keeps the 1.4.2 text fix: it corrects the overspeed-tolerance hint text in the app: the HUD has no red outline, the speed digits turn red. The published APKs below are 1.5.0.
 
 - **Tank capacity:** enter a whole number from **1 to 200 litres**; default **54 L**. The capacity is always entered in litres, even with US gallons selected, and updates the HUD fuel-to-add calculation.
 - **Acceleration bar:** turn it on or off from the app. When enabled, the existing bar uses valid acceleration/speed data; it remains empty while stationary or without valid data.
 - **Overspeed tolerance:** set **0–100 km/h**, default **20 km/h**, always entered in km/h even with mph selected. The speed digits fade from white to red starting at 75% of the tolerance and are fully red at 100%; zero makes any positive overspeed fully red.
 - All three settings are confirmed by BLE readback and saved in HUD NVS. Existing settings, phone owner and gateway bonds are retained. A BOOT phone-binding reset also retains these settings.
 
-These controls need **app 1.4.1 + firmware v29.1 or later (current: v30.0.x)**. App 1.4.1 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; use release 1.4.1. If v29.0 and its OTA partition table are already installed, v29.1 and v30.x use the same layout; earlier firmware needs the initial USB/partition upgrade described below.
+These controls need **app 1.4.1 or newer + firmware v29.1 or later (current: v30.0.x)**. App 1.4.1 still supports older firmware: missing controls are disabled. The APKs in release v1.2 do not include these controls; use release 1.5.0. If v29.0 and its OTA partition table are already installed, v29.1 and v30.x use the same layout; earlier firmware needs the initial USB/partition upgrade described below.
 
 
 - **Photoresistor calibration:** enable the optional ADC1 sensor, then save the dark point with the sensor fully covered and the bright point while illuminating it with a bright flashlight.
@@ -41,11 +41,11 @@ Screenshots supplied by WARMW00D, showing the English interface.
 
 ## Download Android APK
 
-[Version 1.4.1 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.4.1).
+[Version 1.5.0 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.5.0).
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4.1/HUD-Control-1.4.1-release.apk) — signed build for normal installation.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4.1/HUD-Control-1.4.1-debug.apk) — debug build; install with `adb install -t HUD-Control-1.4.1-debug.apk` if Android reports `testOnly=true`.
-- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.4.1/SHA256SUMS.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/HUD-Control-1.5.0-release.apk) — signed build for normal installation.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/HUD-Control-1.5.0-debug.apk) — debug build; install with `adb install -t HUD-Control-1.5.0-debug.apk` if Android reports `testOnly=true`.
+- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.0/SHA256SUMS.txt).
 
 Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
 
@@ -156,7 +156,7 @@ OTA service: `74d0a200-3d92-4f50-9b1a-478142000001`; control `…0002`, data `�
 | Services changed | Reconnect; if necessary toggle Android Bluetooth and restart HUD |
 | Cannot install over an existing app | Check application ID and signing key |
 
-The maintainer confirmed on the real HUD that the app works, including BLE OTA. The maintainer supplied signed APKs (current: 1.4.1); signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
+The maintainer confirmed on the real HUD that the app works, including BLE OTA. The maintainer supplied signed APKs (current: 1.5.0); signatures, content digests, package and version were checked. These APKs were not rebuilt here; lint results are still pending. Firmware host tests exercise the protocol and failures; they do not replace Android BLE tests. RU/EN resource keys and formatting placeholders were checked for consistency.
 
 ## Credits and license
 
