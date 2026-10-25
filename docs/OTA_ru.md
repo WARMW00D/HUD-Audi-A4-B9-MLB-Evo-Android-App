@@ -31,7 +31,7 @@ BOOT-привязку ради OTA не сбрасывать.
 После USB-загрузки Serial 115200 должен показать:
 
 ```text
-[fw] HUD Super Mini v30.0.1 / BLE OTA
+[fw] HUD Super Mini v31.1.0 / BLE OTA
 [ota] BLE service ready, next slot capacity=2031616
 ```
 
