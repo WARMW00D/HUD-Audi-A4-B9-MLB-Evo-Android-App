@@ -8,7 +8,7 @@ The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A
 
 ## Tank capacity, acceleration bar and overspeed tolerance
 
-Source versions: **HUD firmware v31.1.0 / Android app 1.5.1 (versionCode 8)**.
+Source versions: **HUD firmware v31.1.1 / Android app 1.5.1 (versionCode 8)**.
 
 App 1.5.1 (source) fixes camera-upload detection after a firmware update: the app drops the Android GATT cache before service discovery, so a HUD updated to v31 is no longer reported as "needs v31". App 1.5.0 added the **speed-camera database upload** (needs firmware v31) and keeps the 1.4.2 text fix: it corrects the overspeed-tolerance hint text in the app: the HUD has no red outline, the speed digits turn red. The published APKs below are 1.5.1.
 
