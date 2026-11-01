@@ -543,9 +543,19 @@ public final class MainActivity extends Activity {
         // The firmware starts security on connect, also for previously bonded phones.
         main.postDelayed(() -> {
             if (expected != gatt || !connected) return;
-            try { if (!gatt.discoverServices()) fail(R.string.discovery_failed); }
-            catch (RuntimeException e) { fail(R.string.bt_error, e.getMessage()); }
+            // Android caches the GATT database of a bonded device. After a firmware update that adds a service
+            // (camera upload since v31) a stale cache hides it, so drop the cache before discovery.
+            refreshGattCache(expected);
+            main.postDelayed(() -> {
+                if (expected != gatt || !connected) return;
+                try { if (!gatt.discoverServices()) fail(R.string.discovery_failed); }
+                catch (RuntimeException e) { fail(R.string.bt_error, e.getMessage()); }
+            }, 400);
         }, 1200);
+    }
+    private static void refreshGattCache(BluetoothGatt g) {
+        try { g.getClass().getMethod("refresh").invoke(g); }
+        catch (Exception | LinkageError ignored) { /* hidden API unavailable: fall back to the cached database */ }
     }
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent intent) {
