@@ -821,19 +821,23 @@ public final class MainActivity extends Activity {
                     binary=output.toByteArray();
                 }
                 // "CAM1", record count, date, reserved; then 12-byte records (tools/gen_cams.py)
+                // or "ANM1" (arrows.bin from tools/gen_arrow_anim.py): file size at offset 12
                 ByteBuffer header=ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
-                if (binary.length<28 || binary[0]!='C' || binary[1]!='A' || binary[2]!='M' || binary[3]!='1' ||
-                    (long)binary.length!=16L+12L*(header.getInt(4)&0xffffffffL)) {
+                final boolean anm=binary.length>=148 && binary[0]=='A' && binary[1]=='N' && binary[2]=='M' && binary[3]=='1' &&
+                    (long)binary.length==(header.getInt(12)&0xffffffffL);
+                final boolean cam=binary.length>=28 && binary[0]=='C' && binary[1]=='A' && binary[2]=='M' && binary[3]=='1' &&
+                    (long)binary.length==16L+12L*(header.getInt(4)&0xffffffffL);
+                if (!anm && !cam) {
                     main.post(() -> { if (!destroyed) { loadingCams=false; camNote(R.string.cam_invalid_file); } }); return;
                 }
-                int count=header.getInt(4), date=header.getInt(8);
+                int count=anm?header.getInt(8)&0xffff:header.getInt(4), date=anm?0:header.getInt(8);
                 byte[] digest=MessageDigest.getInstance("SHA-256").digest(binary);
                 String selected=filename;
                 main.post(() -> {
                     if (destroyed) return;
                     camsName=selected; camsBytes=binary; camsSha=digest;
                     loadingCams=false; camsReceived=camsTotal=0;
-                    camNote(R.string.cam_file_ready,count,String.format(java.util.Locale.US,"%06d",date));
+                    if (anm) camNote(R.string.anim_file_ready,count,binary.length); else camNote(R.string.cam_file_ready,count,String.format(java.util.Locale.US,"%06d",date));
                 });
             } catch (Exception e) {
                 main.post(() -> { if (!destroyed) { loadingCams=false; camNote(R.string.ota_file_error,e.getMessage()); } });

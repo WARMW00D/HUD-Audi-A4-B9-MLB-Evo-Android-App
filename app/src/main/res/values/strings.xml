@@ -142,7 +142,7 @@
   <string name="light_calibrated">Point recorded</string>
   <string name="light_not_calibrated">Point not recorded</string>
   <string name="cam_title">Speed camera database</string>
-  <string name="cam_hint">Select cams.bin made by gen_cams.py. It is written to the HUD flash (W25Q128) and takes effect immediately, no restart. Keep HUD powered and the app open.</string>
+  <string name="cam_hint">Select cams.bin (made by gen_cams.py) or arrows.bin (animated navigation arrows, made by gen_arrow_anim.py). The file is written to the HUD flash (W25Q128) and takes effect immediately, no restart. Keep HUD powered and the app open.</string>
   <string name="cam_select_hint">Connect to HUD, then select cams.bin.</string>
   <string name="cam_choose">Choose cams.bin</string>
   <string name="cam_upload">Upload database</string>
@@ -160,7 +160,8 @@
   <string name="cam_stalled">Too many lost packets. Move the phone closer to the HUD and retry.</string>
   <string name="cam_result_unknown">No final confirmation from the HUD. Reconnect and check the camera log or upload again.</string>
   <string name="cam_file_too_large">File is larger than %1$d bytes.</string>
-  <string name="cam_invalid_file">Not a cams.bin file (expected CAM1 header and a matching size).</string>
+  <string name="cam_invalid_file">Not a cams.bin or arrows.bin file (expected CAM1/ANM1 header and a matching size).</string>
+  <string name="anim_file_ready">Animated arrows ready: %1$d animations, %2$d bytes. Tap Upload database.</string>
   <string name="cam_file_ready">Database ready: %1$d cameras, dated %2$s. Tap Upload database.</string>
   <string name="cam_confirm_title">Upload camera database?</string>
   <string name="cam_confirm">%1$s\n%2$d bytes\n\nThe database stored in the HUD is replaced. Keep power on until the end.</string>

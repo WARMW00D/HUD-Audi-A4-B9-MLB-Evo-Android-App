@@ -142,7 +142,7 @@
   <string name="light_calibrated">Точка записана</string>
   <string name="light_not_calibrated">Точка не записана</string>
   <string name="cam_title">База камер</string>
-  <string name="cam_hint">Выберите cams.bin, собранный gen_cams.py. Файл пишется во флеш HUD (W25Q128) и сразу начинает работать, без перезагрузки. Не отключайте питание HUD и не закрывайте приложение.</string>
+  <string name="cam_hint">Выберите cams.bin (gen_cams.py) или arrows.bin (анимированные стрелки навигации, gen_arrow_anim.py). Файл пишется во флеш HUD (W25Q128) и сразу начинает работать, без перезагрузки. Не отключайте питание HUD и не закрывайте приложение.</string>
   <string name="cam_select_hint">Подключитесь к HUD и выберите cams.bin.</string>
   <string name="cam_choose">Выбрать cams.bin</string>
   <string name="cam_upload">Загрузить базу</string>
@@ -160,7 +160,8 @@
   <string name="cam_stalled">Слишком много потерянных пакетов. Поднесите телефон ближе к HUD и повторите.</string>
   <string name="cam_result_unknown">Нет итогового подтверждения от HUD. Подключитесь заново, проверьте журнал камер или загрузите ещё раз.</string>
   <string name="cam_file_too_large">Файл больше %1$d байт.</string>
-  <string name="cam_invalid_file">Это не cams.bin (нужен заголовок CAM1 и совпадающий размер).</string>
+  <string name="cam_invalid_file">Это не cams.bin и не arrows.bin (нужен заголовок CAM1/ANM1 и совпадающий размер).</string>
+  <string name="anim_file_ready">Анимированные стрелки готовы: %1$d анимаций, %2$d байт. Нажмите «Загрузить базу».</string>
   <string name="cam_file_ready">База готова: %1$d камер, от %2$s. Нажмите «Загрузить базу».</string>
   <string name="cam_confirm_title">Загрузить базу камер?</string>
   <string name="cam_confirm">%1$s\n%2$d байт\n\nБаза, хранящаяся в HUD, будет заменена. Не отключайте питание до конца.</string>

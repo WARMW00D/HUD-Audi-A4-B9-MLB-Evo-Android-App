@@ -2,15 +2,15 @@
 
 [Русская версия](README_ru.md) · [SuperMini firmware and wiring](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-ESP32-S3-SuperMini-LCD-2.79-NV3007-BLE)
 
-Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.5.1**, Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
+Native Android BLE app for the Audi HUD project by WARMW00D. It changes HUD settings and sends application firmware over BLE. App **1.6.0**, Android **8.0+**, interface **RU / EN**. Package/application ID: `ru.hud.supermini`.
 
 The project grew from the [Waveshare HUD](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Waveshare-ESP32-S3-Touch-LCD-3.49) and its SuperMini adaptation. **The current app targets the SuperMini phone GATT services:** settings firmware v28.1/v28.2 and v29.0 or later (current: v30.0.x); OTA requires v29.0 or a compatible later firmware. The existing Waveshare firmware needs those services ported before this app can control it.
 
 ## Tank capacity, acceleration bar and overspeed tolerance
 
-Source versions: **HUD firmware v31.1.1 / Android app 1.5.1 (versionCode 8)**.
+Source versions: **HUD firmware v31.2.0 / Android app 1.6.0 (versionCode 9)**.
 
-App 1.5.1 (source) fixes camera-upload detection after a firmware update: the app drops the Android GATT cache before service discovery, so a HUD updated to v31 is no longer reported as "needs v31". App 1.5.0 added the **speed-camera database upload** (needs firmware v31) and keeps the 1.4.2 text fix: it corrects the overspeed-tolerance hint text in the app: the HUD has no red outline, the speed digits turn red. The published APKs below are 1.5.1.
+App 1.6.0 (source) also uploads **animated navigation arrows** (`arrows.bin`, firmware v31.2.0+): "Choose cams.bin" accepts `arrows.bin` next to `cams.bin`. App 1.5.1 fixes camera-upload detection after a firmware update: the app drops the Android GATT cache before service discovery, so a HUD updated to v31 is no longer reported as "needs v31". App 1.5.0 added the **speed-camera database upload** (needs firmware v31) and keeps the 1.4.2 text fix: it corrects the overspeed-tolerance hint text in the app: the HUD has no red outline, the speed digits turn red. The published APKs below are 1.6.0.
 
 - **Tank capacity:** enter a whole number from **1 to 200 litres**; default **54 L**. The capacity is always entered in litres, even with US gallons selected, and updates the HUD fuel-to-add calculation.
 - **Acceleration bar:** turn it on or off from the app. When enabled, the existing bar uses valid acceleration/speed data; it remains empty while stationary or without valid data.
@@ -41,11 +41,11 @@ Screenshots supplied by WARMW00D, showing the English interface.
 
 ## Download Android APK
 
-[Version 1.5.1 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.5.1).
+[Version 1.6.0 release page](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/tag/v1.6.0).
 
-- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.1/HUD-Control-1.5.1-release.apk) — signed build for normal installation.
-- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.1/HUD-Control-1.5.1-debug.apk) — debug build; install with `adb install -t HUD-Control-1.5.1-debug.apk` if Android reports `testOnly=true`.
-- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.5.1/SHA256SUMS-1.5.1.txt).
+- [Release APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.6.0/HUD-Control-1.6.0-release.apk) — signed build for normal installation.
+- [Debug APK](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.6.0/HUD-Control-1.6.0-debug.apk) — debug build; install with `adb install -t HUD-Control-1.6.0-debug.apk` if Android reports `testOnly=true`.
+- [SHA-256 checksums](https://github.com/WARMW00D/HUD-Audi-A4-B9-MLB-Evo-Android-App/releases/download/v1.6.0/SHA256SUMS-1.6.0.txt).
 
 Release and debug use different signing keys: switching requires uninstalling the old app and removes its local settings. Keep the release signing key for future updates. OTA requires firmware v29.0 initially installed over USB with the two-slot partition table.
 
@@ -59,7 +59,7 @@ Release and debug use different signing keys: switching requires uninstalling th
 | Units | km/h, km, m or mph, mi, ft; litres or US gallons |
 | Traffic signs | Enable/disable PSD and VZE separately |
 | Confirmed settings | BLE write with response, then read back; firmware stores settings in NVS |
-| Speed-camera database | Upload `cams.bin` over BLE into the HUD's W25Q128 flash; streamed Write Without Response windows with automatic resume, SHA-256 check, instant activation without restart (firmware v31) |
+| Speed-camera database and arrows | Upload `cams.bin` (or animated-arrows `arrows.bin`) over BLE into the HUD's W25Q128 flash; streamed Write Without Response windows with automatic resume, SHA-256 check, instant activation without restart (firmware v31) |
 | BLE OTA | Android file picker, application-image checks, SHA-256, progress and cancellation |
 | Update result | Separate verification/commit phase; uncertain final ACK prompts restart/check |
 
