@@ -33,9 +33,9 @@
     <th>Обновление прошивки</th>
   </tr>
   <tr>
-    <td><img src="docs/images/app-connection-en.jpg" alt="HUD Control: выбор языка и подключение BLE" width="280"></td>
-    <td><img src="docs/images/app-settings-en.jpg" alt="HUD Control: PSD, VZE, язык HUD и единицы" width="280"></td>
-    <td><img src="docs/images/app-ota-en.jpg" alt="HUD Control: обновление прошивки по BLE OTA" width="280"></td>
+    <td><img src="docs/images/app-connection-ru.jpg" alt="HUD Control: выбор языка и подключение BLE" width="280"></td>
+    <td><img src="docs/images/app-settings-ru.jpg" alt="HUD Control: PSD, VZE, язык HUD и единицы" width="280"></td>
+    <td><img src="docs/images/app-ota-ru.jpg" alt="HUD Control: обновление прошивки по BLE OTA" width="280"></td>
   </tr>
 </table>
 
