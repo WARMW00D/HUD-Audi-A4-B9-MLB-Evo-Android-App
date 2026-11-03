@@ -30,12 +30,22 @@
   <tr>
     <th>Подключение</th>
     <th>Настройки дисплея</th>
-    <th>Обновление прошивки</th>
+    <th>Бак, бар ускорения, допуск</th>
   </tr>
   <tr>
     <td><img src="docs/images/app-connection-ru.jpg" alt="HUD Control: выбор языка и подключение BLE" width="280"></td>
     <td><img src="docs/images/app-settings-ru.jpg" alt="HUD Control: PSD, VZE, язык HUD и единицы" width="280"></td>
+    <td><img src="docs/images/app-controls-ru.jpg" alt="HUD Control: объём бака, бар ускорения, толерантность превышения" width="280"></td>
+  </tr>
+  <tr>
+    <th>Калибровка и камеры</th>
+    <th>Обновление прошивки</th>
+    <th>База камер и стрелки</th>
+  </tr>
+  <tr>
+    <td><img src="docs/images/app-calibration-ru.jpg" alt="HUD Control: калибровка датчика света, камеры и звук" width="280"></td>
     <td><img src="docs/images/app-ota-ru.jpg" alt="HUD Control: обновление прошивки по BLE OTA" width="280"></td>
+    <td><img src="docs/images/app-cams-ru.jpg" alt="HUD Control: загрузка базы камер и анимированных стрелок" width="280"></td>
   </tr>
 </table>
 

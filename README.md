@@ -30,12 +30,22 @@ Screenshots supplied by WARMW00D, showing the English interface.
   <tr>
     <th>Connection</th>
     <th>Display settings</th>
-    <th>Firmware update</th>
+    <th>Tank, acceleration bar, tolerance</th>
   </tr>
   <tr>
     <td><img src="docs/images/app-connection-en.jpg" alt="HUD Control: language selection and BLE connection" width="280"></td>
     <td><img src="docs/images/app-settings-en.jpg" alt="HUD Control: PSD, VZE, HUD language and units" width="280"></td>
+    <td><img src="docs/images/app-controls-en.jpg" alt="HUD Control: tank capacity, acceleration bar, overspeed tolerance" width="280"></td>
+  </tr>
+  <tr>
+    <th>Calibration and cameras</th>
+    <th>Firmware update</th>
+    <th>Camera database and arrows</th>
+  </tr>
+  <tr>
+    <td><img src="docs/images/app-calibration-en.jpg" alt="HUD Control: light sensor calibration, speed cameras and sound" width="280"></td>
     <td><img src="docs/images/app-ota-en.jpg" alt="HUD Control: BLE OTA firmware update" width="280"></td>
+    <td><img src="docs/images/app-cams-en.jpg" alt="HUD Control: camera database and animated arrows upload" width="280"></td>
   </tr>
 </table>
 
